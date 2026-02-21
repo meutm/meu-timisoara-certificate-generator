@@ -1,58 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Calibration Tool</title>
+<meta charset="UTF-8"/>
+<title>Calibration Tool — MEU Timișoara</title>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<style>
+  body { font-family: sans-serif; padding: 40px; background: #f4f4f4; }
+  h2 { margin-bottom: 8px; }
+  p { color: #666; margin-bottom: 24px; font-size: .9rem; }
+  button {
+    padding: 12px 28px; background: #0b1f4f; color: white;
+    border: none; font-size: .9rem; cursor: pointer; border-radius: 4px; margin-right: 12px;
+  }
+  button:hover { background: #1e3d8f; }
+  #status { margin-top: 16px; font-size: .85rem; color: #444; }
+  label { font-size: .85rem; margin-right: 8px; }
+  input[type=number] { width: 80px; padding: 6px; margin-right: 16px; }
+</style>
 </head>
 <body>
-<h2>Calibration Tool</h2>
-<button onclick="generate()">Generate Calibration PDF</button>
-<p id="status"></p>
+
+<h2>Calibration Tool — MEU Timișoara 2026</h2>
+<p>
+  Generates the diploma PDF with horizontal lines every <strong>25pt</strong> (red = major every 100pt, grey = minor).<br/>
+  Optionally enter a test Y value to draw a bold blue line at that exact position.
+</p>
+
+<div>
+  <label>Test Y value (optional):</label>
+  <input type="number" id="testY" placeholder="e.g. 1050" />
+  <button onclick="generate()">Generate Calibration PDF</button>
+</div>
+
+<div id="status"></div>
+
 <script>
 async function generate() {
-  document.getElementById('status').textContent = 'Loading...';
+  document.getElementById('status').textContent = 'Loading template...';
   const { PDFDocument, rgb, StandardFonts } = PDFLib;
-  
-  const templateBytes = await fetch('Diploma__1_.pdf').then(r => r.arrayBuffer());
-  const pdfDoc = await PDFDocument.load(templateBytes);
+  const r = await fetch('Diploma__1_.pdf');
+  if (!r.ok) { document.getElementById('status').textContent = 'Error: Diploma__1_.pdf not found.'; return; }
+  const pdfDoc = await PDFDocument.load(await r.arrayBuffer());
   const page = pdfDoc.getPages()[0];
   const { width, height } = page.getSize();
-  
-  document.getElementById('status').textContent = `Page: ${width} x ${height}`;
-  
   const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const red = rgb(1, 0, 0);
-  const blue = rgb(0, 0, 1);
-  
-  // Draw markers every 50 points
-  for (let y = 100; y <= height; y += 50) {
-    const label = `y=${y}`;
-    const tw = font.widthOfTextAtSize(label, 10);
-    // Draw a horizontal line
-    page.drawLine({
-      start: { x: 50, y: y },
-      end: { x: 200, y: y },
-      color: red,
-      thickness: 0.5,
-    });
-    // Draw label
-    page.drawText(label, {
-      x: 205,
-      y: y - 4,
-      size: 10,
-      font,
-      color: blue,
-    });
+  const red  = rgb(0.85, 0.1, 0.1);
+  const blue = rgb(0.1, 0.2, 0.8);
+  const grey = rgb(0.55, 0.55, 0.55);
+
+  for (let y = 25; y <= height; y += 25) {
+    const major = (y % 100 === 0);
+    page.drawLine({ start: { x: 30, y }, end: { x: major ? 230 : 150, y }, color: major ? red : grey, thickness: major ? 0.7 : 0.3 });
+    page.drawText(`y=${y}`, { x: major ? 235 : 155, y: y - 4, size: major ? 9 : 7, font, color: major ? red : grey });
   }
-  
+
+  const testYVal = parseInt(document.getElementById('testY').value);
+  if (!isNaN(testYVal) && testYVal > 0) {
+    page.drawLine({ start: { x: 0, y: testYVal }, end: { x: width, y: testYVal }, color: blue, thickness: 1.5 });
+    page.drawText(`TEST y=${testYVal}`, { x: width / 2 - 50, y: testYVal + 5, size: 12, font, color: blue });
+  }
+
   const bytes = await pdfDoc.save();
   const blob = new Blob([bytes], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'calibration.pdf';
-  a.click();
-  document.getElementById('status').textContent = 'Downloaded! Open PDF and check y values on the lines.';
+  a.href = url; a.download = 'calibration_meu.pdf'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('status').textContent = `Done! Page: ${width.toFixed(0)} × ${height.toFixed(0)} pt. Verify Y values on the printed lines.`;
 }
 </script>
 </body>
