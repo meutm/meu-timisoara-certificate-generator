@@ -908,28 +908,39 @@
       const page   = pdfDoc.getPages()[0];
       const { width, height } = page.getSize();
 
-      // Embed fonts
+      // Embed fallback font
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      // Load Dancing Script (cursive, supports Romanian diacritics) for the name
-      const dancingFontBytes = await fetch('https://fonts.gstatic.com/s/dancingscript/v25/If2cXTr6YS-zF4S-kcSWSVi_sxjsohD9F50Ruu7BMSo3ROp6hA.woff2')
-        .catch(() => null);
-      let nameFont;
-      if (dancingFontBytes && dancingFontBytes.ok) {
-        const fontData = await dancingFontBytes.arrayBuffer();
-        nameFont = await pdfDoc.embedFont(fontData);
-      } else {
-        nameFont = fontBold;
+      // Load Dancing Script TTF (cursive, supports diacritics)
+      // Fetching without browser UA causes Google Fonts to return TTF instead of woff2
+      let nameFont = fontBold;
+      try {
+        const cssResp = await fetch('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700', {
+          headers: { 'User-Agent': 'Mozilla/4.0' }
+        });
+        const css = await cssResp.text();
+        const ttfMatch = css.match(/src:\s*url\(([^)]+)\)/);
+        if (ttfMatch) {
+          const ttfResp = await fetch(ttfMatch[1]);
+          const ttfData = await ttfResp.arrayBuffer();
+          nameFont = await pdfDoc.embedFont(ttfData);
+        }
+      } catch(e) {
+        console.warn('Could not load Dancing Script, using fallback:', e);
       }
 
+      // ── Title Case helper (for cursive display) ──
+      const toTitleCase = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+      const nameDisplay = toTitleCase(name);
+
       // ── Dynamic font size for name based on length ──
-      const nameLen = name.length;
+      const nameLen = nameDisplay.length;
       let nameFontSize;
-      if      (nameLen <= 14) nameFontSize = 42;
-      else if (nameLen <= 20) nameFontSize = 36;
-      else if (nameLen <= 28) nameFontSize = 30;
-      else if (nameLen <= 36) nameFontSize = 24;
-      else                    nameFontSize = 20;
+      if      (nameLen <= 14) nameFontSize = 46;
+      else if (nameLen <= 20) nameFontSize = 40;
+      else if (nameLen <= 28) nameFontSize = 34;
+      else if (nameLen <= 36) nameFontSize = 28;
+      else                    nameFontSize = 22;
 
       // ── Center text helper ──
       function centerX(text, font, size) {
@@ -938,22 +949,22 @@
       }
 
       // ── Color ──
-      const blue = rgb(0.051, 0.133, 0.318); // #0d2251 navy
+      const blue = rgb(0.051, 0.133, 0.318);
 
       // ── NAME (calibrated: y=1050) ──
-      page.drawText(name, {
-        x: centerX(name, nameFont, nameFontSize),
+      page.drawText(nameDisplay, {
+        x: centerX(nameDisplay, nameFont, nameFontSize),
         y: 1050,
         size: nameFontSize,
         font: nameFont,
         color: blue,
       });
 
-      // ── REPRESENTING (calibrated: y=750) ──
-      const repFontSize = rep.length > 28 ? 20 : rep.length > 20 ? 24 : 28;
+      // ── REPRESENTING (calibrated: y=775) ──
+      const repFontSize = rep.length > 28 ? 22 : rep.length > 20 ? 26 : 30;
       page.drawText(rep, {
         x: centerX(rep, fontBold, repFontSize),
-        y: 750,
+        y: 775,
         size: repFontSize,
         font: fontBold,
         color: blue,
