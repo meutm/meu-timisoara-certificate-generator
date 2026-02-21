@@ -908,18 +908,28 @@
       const page   = pdfDoc.getPages()[0];
       const { width, height } = page.getSize();
 
-      // Embed a clean font
-      const fontBold   = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-      const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      // Embed fonts
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      // Load Dancing Script (cursive, supports Romanian diacritics) for the name
+      const dancingFontBytes = await fetch('https://fonts.gstatic.com/s/dancingscript/v25/If2cXTr6YS-zF4S-kcSWSVi_sxjsohD9F50Ruu7BMSo3ROp6hA.woff2')
+        .catch(() => null);
+      let nameFont;
+      if (dancingFontBytes && dancingFontBytes.ok) {
+        const fontData = await dancingFontBytes.arrayBuffer();
+        nameFont = await pdfDoc.embedFont(fontData);
+      } else {
+        nameFont = fontBold;
+      }
 
       // ── Dynamic font size for name based on length ──
       const nameLen = name.length;
       let nameFontSize;
-      if      (nameLen <= 14) nameFontSize = 26;
-      else if (nameLen <= 20) nameFontSize = 22;
-      else if (nameLen <= 28) nameFontSize = 18;
-      else if (nameLen <= 36) nameFontSize = 15;
-      else                    nameFontSize = 13;
+      if      (nameLen <= 14) nameFontSize = 42;
+      else if (nameLen <= 20) nameFontSize = 36;
+      else if (nameLen <= 28) nameFontSize = 30;
+      else if (nameLen <= 36) nameFontSize = 24;
+      else                    nameFontSize = 20;
 
       // ── Center text helper ──
       function centerX(text, font, size) {
@@ -930,22 +940,20 @@
       // ── Color ──
       const blue = rgb(0.051, 0.133, 0.318); // #0d2251 navy
 
-      // ── NAME (on the line below "Recognized") ──
-      const nameY = 1061;
+      // ── NAME (calibrated: y=1050) ──
       page.drawText(name, {
-        x: centerX(name, fontBold, nameFontSize),
-        y: nameY,
+        x: centerX(name, nameFont, nameFontSize),
+        y: 1050,
         size: nameFontSize,
-        font: fontBold,
+        font: nameFont,
         color: blue,
       });
 
-      // ── REPRESENTING (on the line below "Representing") ──
-      const repFontSize = rep.length > 22 ? 15 : 18;
-      const repY = 825;
+      // ── REPRESENTING (calibrated: y=750) ──
+      const repFontSize = rep.length > 28 ? 20 : rep.length > 20 ? 24 : 28;
       page.drawText(rep, {
         x: centerX(rep, fontBold, repFontSize),
-        y: repY,
+        y: 750,
         size: repFontSize,
         font: fontBold,
         color: blue,
