@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Calibration Tool</title>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+<h2>Calibration Tool</h2>
+<button onclick="generate()">Generate Calibration PDF</button>
+<p id="status"></p>
+<script>
+async function generate() {
+  document.getElementById('status').textContent = 'Loading...';
+  const { PDFDocument, rgb, StandardFonts } = PDFLib;
+  
+  const templateBytes = await fetch('Diploma__1_.pdf').then(r => r.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(templateBytes);
+  const page = pdfDoc.getPages()[0];
+  const { width, height } = page.getSize();
+  
+  document.getElementById('status').textContent = `Page: ${width} x ${height}`;
+  
+  const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const red = rgb(1, 0, 0);
+  const blue = rgb(0, 0, 1);
+  
+  // Draw markers every 50 points
+  for (let y = 100; y <= height; y += 50) {
+    const label = `y=${y}`;
+    const tw = font.widthOfTextAtSize(label, 10);
+    // Draw a horizontal line
+    page.drawLine({
+      start: { x: 50, y: y },
+      end: { x: 200, y: y },
+      color: red,
+      thickness: 0.5,
+    });
+    // Draw label
+    page.drawText(label, {
+      x: 205,
+      y: y - 4,
+      size: 10,
+      font,
+      color: blue,
+    });
+  }
+  
+  const bytes = await pdfDoc.save();
+  const blob = new Blob([bytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'calibration.pdf';
+  a.click();
+  document.getElementById('status').textContent = 'Downloaded! Open PDF and check y values on the lines.';
+}
+</script>
+</body>
+</html>
