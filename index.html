@@ -4,954 +4,935 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MEU Timișoara 2026 — Certificate Portal</title>
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- pdf-lib -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
   <style>
-    /* ── Design tokens ── */
     :root {
-      --navy:   #0d2151;
-      --navy2:  #1a3a7c;
-      --gold:   #d4a843;
-      --gold2:  #f0c96b;
-      --white:  #ffffff;
-      --offwhite: #f5f7fc;
-      --muted:  #8592b0;
-      --border: #d1d9ef;
-      --success: #1f8c5e;
-      --radius: 14px;
-      --shadow: 0 4px 32px rgba(13,33,81,.12);
-      --shadow-lg: 0 12px 60px rgba(13,33,81,.18);
+      --ink:       #0b1626;
+      --ink-2:     #1c2e4a;
+      --ink-3:     #2e4a6e;
+      --gold:      #b8902a;
+      --gold-pale: #e8d49a;
+      --rule:      #d6dce8;
+      --rule-dark: rgba(255,255,255,.1);
+      --paper:     #f7f6f2;
+      --white:     #ffffff;
+      --muted:     #8a96aa;
+      --error:     #b22222;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; height: 100%; }
 
     body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--offwhite);
-      color: var(--navy);
+      font-family: 'Jost', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
       min-height: 100vh;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      grid-template-rows: auto 1fr auto;
     }
 
-    /* ── Stars pattern ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        radial-gradient(circle at 15% 25%, rgba(212,168,67,.07) 0%, transparent 50%),
-        radial-gradient(circle at 85% 75%, rgba(26,58,124,.06) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ── Header / Hero ── */
-    .hero {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #1e3d8f 100%);
-      position: relative;
+    /* ════════ LEFT PANEL ════════ */
+    .panel-left {
+      grid-column: 1;
+      grid-row: 1 / 4;
+      background: var(--ink);
+      position: sticky;
+      top: 0;
+      height: 100vh;
       overflow: hidden;
-      padding: 60px 24px 80px;
-      text-align: center;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 320px; height: 320px;
-      border: 2px solid rgba(212,168,67,.15);
-      border-radius: 50%;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -60px; left: -60px;
-      width: 240px; height: 240px;
-      border: 2px solid rgba(212,168,67,.1);
-      border-radius: 50%;
-    }
-
-    /* EU Stars ring */
-    .stars-ring {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
-      max-width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .star {
-      color: var(--gold);
-      font-size: 18px;
-      animation: starPulse 3s ease-in-out infinite;
-    }
-    .star:nth-child(2)  { animation-delay: .2s; }
-    .star:nth-child(3)  { animation-delay: .4s; }
-    .star:nth-child(4)  { animation-delay: .6s; }
-    .star:nth-child(5)  { animation-delay: .8s; }
-    .star:nth-child(6)  { animation-delay: 1s; }
-    .star:nth-child(7)  { animation-delay: 1.2s; }
-    .star:nth-child(8)  { animation-delay: 1.4s; }
-    .star:nth-child(9)  { animation-delay: 1.6s; }
-    .star:nth-child(10) { animation-delay: 1.8s; }
-    .star:nth-child(11) { animation-delay: 2s; }
-    .star:nth-child(12) { animation-delay: 2.2s; }
-
-    @keyframes starPulse {
-      0%, 100% { opacity: .5; transform: scale(1); }
-      50%       { opacity: 1;  transform: scale(1.15); }
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: rgba(212,168,67,.15);
-      border: 1px solid rgba(212,168,67,.4);
-      color: var(--gold2);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      border-radius: 999px;
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 700;
-      font-size: clamp(2.2rem, 6vw, 3.8rem);
-      color: var(--white);
-      line-height: 1.1;
-      margin-bottom: 12px;
-    }
-
-    .hero h1 span {
-      color: var(--gold2);
-    }
-
-    .hero p {
-      color: rgba(255,255,255,.65);
-      font-size: clamp(.9rem, 2.5vw, 1.05rem);
-      font-weight: 300;
-      max-width: 500px;
-      margin: 0 auto 32px;
-      line-height: 1.7;
-    }
-
-    .hero-dates {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.15);
-      border-radius: 999px;
-      padding: 10px 24px;
-      color: rgba(255,255,255,.85);
-      font-size: .88rem;
-      font-weight: 500;
-      letter-spacing: .5px;
-    }
-    .hero-dates::before {
-      content: '📅';
-      font-size: 1rem;
-    }
-
-    /* ── Step indicators ── */
-    .step-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0;
-      padding: 32px 24px 0;
-      position: relative;
-      z-index: 1;
-    }
-
-    .step-item {
       display: flex;
       flex-direction: column;
+      padding: 52px 44px;
+    }
+
+    /* subtle grid texture */
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* diagonal accent */
+    .panel-left::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 320px;
+      height: 320px;
+      border: 1px solid rgba(184,144,42,.2);
+      transform: rotate(15deg);
+      pointer-events: none;
+    }
+
+    .left-inner { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; }
+
+    /* top wordmark */
+    .wordmark {
+      display: flex;
       align-items: center;
-      gap: 8px;
-      cursor: pointer;
+      gap: 10px;
+      margin-bottom: 64px;
     }
-
-    .step-num {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-      font-size: .95rem;
-      transition: all .3s;
-      border: 2px solid var(--border);
-      background: var(--white);
-      color: var(--muted);
-      box-shadow: var(--shadow);
+    .wordmark-line {
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
     }
-
-    .step-num.active {
-      background: var(--navy);
-      border-color: var(--navy);
-      color: var(--white);
-      box-shadow: 0 4px 20px rgba(13,33,81,.3);
-    }
-
-    .step-num.done {
-      background: var(--success);
-      border-color: var(--success);
-      color: var(--white);
-    }
-
-    .step-label {
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: .5px;
+    .wordmark-text {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
+      color: rgba(255,255,255,.45);
     }
 
-    .step-label.active { color: var(--navy); }
-
-    .step-connector {
-      width: 80px; height: 2px;
-      background: var(--border);
-      margin: 0 8px;
-      margin-bottom: 30px;
-      transition: background .3s;
-    }
-
-    .step-connector.done { background: var(--success); }
-
-    /* ── Main content ── */
-    .main {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 40px 20px 80px;
+    /* EU ring */
+    .eu-ring {
       position: relative;
-      z-index: 1;
+      width: 64px;
+      height: 64px;
+      margin-bottom: 36px;
+    }
+    .eu-ring svg {
+      width: 64px;
+      height: 64px;
+      animation: slowRotate 30s linear infinite;
+    }
+    @keyframes slowRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
     }
 
-    /* ── Cards ── */
-    .card {
-      background: var(--white);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 36px;
-      border: 1px solid var(--border);
-      animation: fadeUp .5s ease both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .card-header {
-      margin-bottom: 28px;
-    }
-
-    .card-tag {
-      display: inline-block;
-      background: rgba(13,33,81,.07);
-      color: var(--navy2);
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
-
-    .card h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.5rem, 4vw, 2rem);
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 6px;
-    }
-
-    .card p.subtitle {
-      color: var(--muted);
-      font-size: .9rem;
+    .left-heading {
+      font-family: 'Cormorant', serif;
+      font-size: 2.6rem;
       font-weight: 300;
+      line-height: 1.15;
+      color: var(--white);
+      letter-spacing: -.5px;
+      margin-bottom: 8px;
+    }
+    .left-heading em {
+      font-style: italic;
+      color: var(--gold-pale);
+    }
+
+    .left-subtitle {
+      font-size: .82rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.4);
+      letter-spacing: .5px;
+      margin-bottom: 48px;
       line-height: 1.6;
     }
 
-    /* ── Form ── */
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    @media (max-width: 500px) {
-      .form-row { grid-template-columns: 1fr; }
-      .card { padding: 24px 18px; }
-      .step-connector { width: 40px; }
-    }
-
-    .form-group {
+    /* meta list */
+    .meta-list {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-bottom: 18px;
+      gap: 0;
+      border-top: 1px solid var(--rule-dark);
     }
-
-    .form-group:last-of-type { margin-bottom: 0; }
-
-    label {
-      font-size: .8rem;
-      font-weight: 600;
-      color: var(--navy);
-      letter-spacing: .3px;
-      text-transform: uppercase;
-    }
-
-    label .req {
-      color: var(--gold);
-      margin-left: 2px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-family: 'Outfit', sans-serif;
-      font-size: .95rem;
-      color: var(--navy);
-      background: var(--white);
-      transition: border-color .2s, box-shadow .2s;
-      outline: none;
-      appearance: none;
-    }
-
-    input:focus, select:focus {
-      border-color: var(--navy2);
-      box-shadow: 0 0 0 3px rgba(26,58,124,.12);
-    }
-
-    input.caps {
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 1px;
-      font-size: 1rem;
-    }
-
-    input.caps::placeholder {
-      text-transform: none;
-      font-weight: 400;
-      letter-spacing: 0;
-      color: #b0b8cc;
-    }
-
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230d2151' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 40px;
-      cursor: pointer;
-    }
-
-    .input-hint {
-      font-size: .75rem;
-      color: var(--muted);
-      font-weight: 400;
-      margin-top: 2px;
-    }
-
-    .input-hint.warn {
-      color: #c0392b;
-      font-weight: 500;
-    }
-
-    /* Name length indicator */
-    .name-meter {
-      height: 3px;
-      border-radius: 999px;
-      background: var(--border);
-      margin-top: 6px;
-      overflow: hidden;
-    }
-    .name-meter-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--gold), var(--navy2));
-      transition: width .3s;
-      width: 0%;
-    }
-
-    /* ── Buttons ── */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-family: 'Outfit', sans-serif;
-      font-size: .95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      border: none;
-      width: 100%;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
-      color: var(--white);
-      box-shadow: 0 4px 16px rgba(13,33,81,.28);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(13,33,81,.35);
-    }
-    .btn-primary:active { transform: translateY(0); }
-
-    .btn-gold {
-      background: linear-gradient(135deg, var(--gold) 0%, #c4922e 100%);
-      color: var(--white);
-      box-shadow: 0 4px 16px rgba(212,168,67,.35);
-    }
-    .btn-gold:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(212,168,67,.45);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--navy);
-    }
-    .btn-outline:hover {
-      border-color: var(--navy2);
-      background: rgba(13,33,81,.04);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 28px;
-    }
-
-    .btn-row .btn { flex: 1; }
-
-    /* ── Section divider ── */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin: 24px 0;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-    .divider span {
-      font-size: .75rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    /* ── Privacy note ── */
-    .privacy-note {
+    .meta-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      background: rgba(13,33,81,.04);
-      border: 1px solid rgba(13,33,81,.08);
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-top: 20px;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--rule-dark);
     }
-    .privacy-note .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-    .privacy-note p {
-      font-size: .8rem;
-      color: var(--muted);
-      line-height: 1.5;
+    .meta-icon {
+      width: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      opacity: .5;
     }
-
-    /* ── Success banner ── */
-    .success-banner {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(31,140,94,.08);
-      border: 1px solid rgba(31,140,94,.25);
-      border-radius: 10px;
-      padding: 14px 18px;
-      margin-bottom: 24px;
+    .meta-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 3px;
     }
-    .success-banner .icon { font-size: 1.3rem; }
-    .success-banner p {
-      font-size: .88rem;
-      color: var(--success);
-      font-weight: 500;
-      line-height: 1.4;
+    .meta-value {
+      font-size: .82rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.7);
+      letter-spacing: .2px;
     }
 
-    /* ── Preview box ── */
-    .preview-box {
-      background: var(--offwhite);
-      border: 1.5px dashed var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      text-align: center;
-      min-height: 90px;
+    /* left footer */
+    .left-footer {
+      margin-top: auto;
+      padding-top: 32px;
+      border-top: 1px solid var(--rule-dark);
+    }
+    .left-footer-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.25);
+      margin-bottom: 10px;
+    }
+    .signatories {
       display: flex;
       flex-direction: column;
+      gap: 8px;
+    }
+    .signatory {
+      display: flex;
+      flex-direction: column;
+    }
+    .signatory-name {
+      font-size: .8rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.65);
+      letter-spacing: .3px;
+    }
+    .signatory-role {
+      font-size: .7rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.3);
+      letter-spacing: .5px;
+    }
+
+    /* ════════ RIGHT PANEL ════════ */
+    .panel-right {
+      grid-column: 2;
+      grid-row: 1 / 4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* top rule */
+    .right-topbar {
+      height: 56px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 4px;
-      margin-top: 20px;
-      transition: all .3s;
+      padding: 0 56px;
+      justify-content: space-between;
+      flex-shrink: 0;
     }
-
-    .preview-box.has-content {
-      border-color: var(--gold);
-      background: rgba(212,168,67,.04);
-    }
-
-    .preview-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 700;
-      color: var(--navy);
-      transition: font-size .3s;
-      line-height: 1.2;
-      word-break: break-word;
-    }
-
-    .preview-label {
-      font-size: .75rem;
-      font-weight: 600;
+    .right-topbar-left {
+      font-size: .72rem;
+      font-weight: 500;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--muted);
     }
-
-    .preview-representing {
-      font-size: .95rem;
-      font-weight: 600;
-      color: var(--navy2);
-      margin-top: 4px;
-      font-style: italic;
+    .right-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .6; transform: scale(.85); }
+    }
+    .status-text {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
-    /* ── Loading spinner ── */
+    /* main content area */
+    .right-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 56px;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    /* section heading */
+    .form-heading {
+      margin-bottom: 48px;
+    }
+    .form-heading-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .form-heading-eyebrow-line {
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+    .form-heading-eyebrow-text {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .form-heading h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.15;
+      letter-spacing: -.5px;
+      margin-bottom: 10px;
+    }
+    .form-heading p {
+      font-size: .85rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 400px;
+    }
+
+    /* fields */
+    .field {
+      margin-bottom: 28px;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .field-label-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .field-label-text {
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .field-label-req {
+      color: var(--gold);
+      font-size: .8rem;
+      margin-left: 2px;
+      line-height: 1;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--rule);
+      border-radius: 0;
+      font-family: 'Jost', sans-serif;
+      font-size: .92rem;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+      appearance: none;
+      transition: border-color .2s, box-shadow .2s;
+      letter-spacing: .2px;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: var(--ink-3);
+      box-shadow: 0 0 0 2px rgba(46,74,110,.08);
+    }
+    input.caps {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 500;
+      font-size: .88rem;
+    }
+    input.caps::placeholder {
+      text-transform: none;
+      letter-spacing: .2px;
+      font-weight: 300;
+      color: #bcc4d4;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230b1626' stroke-width='1.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 42px;
+      cursor: pointer;
+    }
+    select option { font-weight: 300; }
+
+    /* progress bar */
+    .progress-track {
+      height: 1px;
+      background: var(--rule);
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-fill {
+      position: absolute;
+      left: 0; top: 0; height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--ink-3));
+      transition: width .3s ease;
+      width: 0%;
+    }
+    .field-sub {
+      margin-top: 6px;
+      font-size: .72rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: .2px;
+    }
+    .field-sub.warn {
+      color: var(--error);
+      font-weight: 500;
+    }
+
+    /* ── PREVIEW ── */
+    .preview {
+      margin: 36px 0;
+      border: 1px solid var(--rule);
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color .3s;
+    }
+    .preview::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--rule);
+      transition: background .3s;
+    }
+    .preview.active { border-color: var(--gold); }
+    .preview.active::before { background: var(--gold); }
+
+    .preview-inner {
+      padding: 28px 32px;
+      text-align: center;
+      width: 100%;
+    }
+    .preview-label {
+      font-size: .63rem;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .preview-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+      transition: font-size .3s;
+      font-size: 2rem;
+      word-break: break-word;
+    }
+    .preview-divider {
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+      margin: 14px auto;
+      display: none;
+    }
+    .preview-rep {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      display: none;
+    }
+    .preview-empty {
+      font-size: .82rem;
+      font-weight: 300;
+      color: var(--rule);
+      letter-spacing: .5px;
+    }
+
+    /* ── DOWNLOAD BUTTON ── */
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .btn-download {
+      width: 100%;
+      padding: 18px 24px;
+      background: var(--ink);
+      color: var(--white);
+      font-family: 'Jost', sans-serif;
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid var(--ink);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background .2s, border-color .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-download::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; height: 100%;
+      width: 0%;
+      background: var(--gold);
+      transition: width .4s ease;
+      z-index: 0;
+    }
+    .btn-download:hover::before { width: 100%; }
+    .btn-download:hover { border-color: var(--gold); }
+    .btn-download span,
+    .btn-download svg { position: relative; z-index: 1; }
+    .btn-download:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+    .btn-download:disabled::before { display: none; }
+
+    .btn-note {
+      padding: 12px 0;
+      font-size: .7rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: .3px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-note svg { flex-shrink: 0; }
+
     .spinner {
-      display: inline-block;
-      width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,.35);
-      border-top-color: var(--white);
+      width: 16px; height: 16px;
+      border: 1.5px solid rgba(255,255,255,.25);
+      border-top-color: white;
       border-radius: 50%;
       animation: spin .7s linear infinite;
-      flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Hidden ── */
-    .hidden { display: none !important; }
-
-    /* ── Footer ── */
-    footer {
-      text-align: center;
-      padding: 32px 20px;
+    /* ── RIGHT FOOTER ── */
+    .right-footer {
+      height: 56px;
+      border-top: 1px solid var(--rule);
+      padding: 0 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .right-footer-left {
+      font-size: .7rem;
+      font-weight: 300;
       color: var(--muted);
-      font-size: .8rem;
-      position: relative;
-      z-index: 1;
+      letter-spacing: .3px;
+    }
+    .right-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ep-badge {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: .7;
     }
 
-    footer span { color: var(--gold); }
-
-    /* ── Responsive tweaks ── */
-    @media (max-width: 400px) {
-      .hero h1 { font-size: 1.9rem; }
-      .step-label { font-size: .65rem; }
+    /* ════════ RESPONSIVE ════════ */
+    @media (max-width: 900px) {
+      body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+      }
+      .panel-left {
+        position: static;
+        height: auto;
+        grid-row: 2;
+        padding: 40px 32px;
+      }
+      .panel-right {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      .right-main {
+        padding: 40px 32px;
+      }
+      .right-topbar, .right-footer {
+        padding: 0 32px;
+      }
+      .left-footer { display: none; }
+      .meta-list { flex-direction: row; flex-wrap: wrap; }
+      .meta-item { flex: 1 1 45%; border-right: none; }
+      .eu-ring { display: none; }
+    }
+    @media (max-width: 520px) {
+      .right-main { padding: 32px 20px; }
+      .right-topbar, .right-footer { padding: 0 20px; }
+      .panel-left { padding: 32px 20px; }
+      .form-heading h1 { font-size: 1.9rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- ════════ HERO ════════ -->
-<header class="hero">
-  <div class="stars-ring">
-    <span class="star">★</span><span class="star">★</span><span class="star">★</span>
-    <span class="star">★</span><span class="star">★</span><span class="star">★</span>
-    <span class="star">★</span><span class="star">★</span><span class="star">★</span>
-    <span class="star">★</span><span class="star">★</span><span class="star">★</span>
-  </div>
-  <div class="hero-badge">Certificate Portal</div>
-  <h1>Model European Union<br /><span>Timișoara 2026</span></h1>
-  <p>Register for the first edition and generate your official participation certificate.</p>
-  <div class="hero-dates">25th – 29th March 2026 · Timișoara, Romania</div>
-</header>
+<!-- ════════════ LEFT PANEL ════════════ -->
+<aside class="panel-left">
+  <div class="left-inner">
 
-<!-- ════════ STEP BAR ════════ -->
-<div class="step-bar">
-  <div class="step-item" onclick="goToStep(1)">
-    <div class="step-num active" id="s1">1</div>
-    <div class="step-label active" id="sl1">Registration</div>
-  </div>
-  <div class="step-connector" id="sc1"></div>
-  <div class="step-item" onclick="goToStep(2)">
-    <div class="step-num" id="s2">2</div>
-    <div class="step-label" id="sl2">Certificate</div>
-  </div>
-</div>
-
-<!-- ════════ MAIN ════════ -->
-<main class="main">
-
-  <!-- ── STEP 1: Registration ── -->
-  <div id="step1" class="card">
-    <div class="card-header">
-      <div class="card-tag">Step 1 of 2</div>
-      <h2>Participant Registration</h2>
-      <p class="subtitle">Fill in your details to participate in MEU Timișoara 2026. Your certificate will be generated after registration.</p>
+    <div class="wordmark">
+      <div class="wordmark-line"></div>
+      <div class="wordmark-text">MEU · Certificate Portal</div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>First Name <span class="req">*</span></label>
-        <input type="text" id="reg-first" placeholder="Maria" autocomplete="given-name" />
-      </div>
-      <div class="form-group">
-        <label>Last Name <span class="req">*</span></label>
-        <input type="text" id="reg-last" placeholder="Ionescu" autocomplete="family-name" />
+    <!-- Animated EU ring SVG -->
+    <div class="eu-ring">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" stroke="rgba(184,144,42,.25)" stroke-width=".75"/>
+        <!-- 12 stars on the ring -->
+        <g fill="#b8902a" opacity=".8">
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(0 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(30 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(60 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(90 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(120 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(150 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(180 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(210 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(240 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(270 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(300 32 32)"/>
+          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(330 32 32)"/>
+        </g>
+      </svg>
+    </div>
+
+    <h2 class="left-heading">
+      Model<br />European<br />Union <em>Timișoara</em>
+    </h2>
+    <p class="left-subtitle">First Edition · 2026<br />Participation Certificate</p>
+
+    <ul class="meta-list">
+      <li class="meta-item">
+        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
+          <rect x="1" y="3" width="14" height="12" rx="1"/>
+          <path d="M1 7h14M5 1v4M11 1v4"/>
+        </svg>
+        <div>
+          <span class="meta-label">Dates</span>
+          <span class="meta-value">25–29 March 2026</span>
+        </div>
+      </li>
+      <li class="meta-item">
+        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
+          <path d="M8 1C5.24 1 3 3.24 3 6c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5z"/>
+          <circle cx="8" cy="6" r="1.5"/>
+        </svg>
+        <div>
+          <span class="meta-label">Location</span>
+          <span class="meta-value">Timișoara, Romania</span>
+        </div>
+      </li>
+      <li class="meta-item">
+        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
+          <circle cx="8" cy="8" r="6.5"/>
+          <path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5M8 1.5C8 1.5 10.5 4 10.5 8S8 14.5 8 14.5M1.5 8h13"/>
+        </svg>
+        <div>
+          <span class="meta-label">Institution</span>
+          <span class="meta-value">Universitatea de Vest<br/>din Timișoara</span>
+        </div>
+      </li>
+      <li class="meta-item">
+        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
+          <path d="M8 1L2 5v7l6 3 6-3V5L8 1z"/>
+          <path d="M8 1v14M2 5l6 3 6-3"/>
+        </svg>
+        <div>
+          <span class="meta-label">Patronage</span>
+          <span class="meta-value">European Parliament</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="left-footer">
+      <div class="left-footer-label">Authorized Signatories</div>
+      <div class="signatories">
+        <div class="signatory">
+          <span class="signatory-name">Viorel Lambu</span>
+          <span class="signatory-role">Director General</span>
+        </div>
+        <div class="signatory">
+          <span class="signatory-name">Paula Iovescu</span>
+          <span class="signatory-role">Project Manager</span>
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Institutional Email <span class="req">*</span></label>
-      <input type="email" id="reg-email" placeholder="maria.ionescu@university.ro" autocomplete="email" />
-    </div>
+  </div>
+</aside>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>University / Institution <span class="req">*</span></label>
-        <input type="text" id="reg-uni" placeholder="UVT Timișoara" />
+<!-- ════════════ RIGHT PANEL ════════════ -->
+<div class="panel-right">
+
+  <!-- Top bar -->
+  <div class="right-topbar">
+    <div class="right-topbar-left">Certificate Generation System</div>
+    <div class="right-topbar-right">
+      <div class="status-dot"></div>
+      <span class="status-text">Available</span>
+    </div>
+  </div>
+
+  <!-- Main form -->
+  <div class="right-main">
+    <div class="form-container">
+
+      <div class="form-heading">
+        <div class="form-heading-eyebrow">
+          <div class="form-heading-eyebrow-line"></div>
+          <div class="form-heading-eyebrow-text">Official Document</div>
+        </div>
+        <h1>Generate Your<br />Certificate</h1>
+        <p>Enter your full name and select your delegation or committee. The certificate will be issued as a signed PDF document.</p>
       </div>
-      <div class="form-group">
-        <label>Country <span class="req">*</span></label>
-        <select id="reg-country">
-          <option value="">Select country…</option>
-          <option>Romania</option>
-          <option>Germany</option>
-          <option>France</option>
-          <option>Italy</option>
-          <option>Spain</option>
-          <option>Hungary</option>
-          <option>Poland</option>
-          <option>Netherlands</option>
-          <option>Belgium</option>
-          <option>Other</option>
+
+      <!-- FULL NAME -->
+      <div class="field">
+        <div class="field-label">
+          <svg class="field-label-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="7" cy="4.5" r="2.5"/>
+            <path d="M1.5 12.5c0-2.76 2.46-5 5.5-5s5.5 2.24 5.5 5"/>
+          </svg>
+          <span class="field-label-text">Full Name</span>
+          <span class="field-label-req">*</span>
+        </div>
+        <input
+          type="text"
+          id="cert-name"
+          class="caps"
+          placeholder="Enter name as it should appear"
+          maxlength="50"
+          oninput="onNameInput(this)"
+          autocomplete="off"
+        />
+        <div class="progress-track"><div class="progress-fill" id="nameMeter"></div></div>
+        <div class="field-sub" id="nameHint">Name will appear in title case on the certificate</div>
+      </div>
+
+      <!-- REPRESENTING -->
+      <div class="field">
+        <div class="field-label">
+          <svg class="field-label-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M1 3h12M1 7h8M1 11h5"/>
+          </svg>
+          <span class="field-label-text">Representing</span>
+          <span class="field-label-req">*</span>
+        </div>
+        <select id="cert-representing" onchange="updatePreview()">
+          <option value="">Select delegation or committee…</option>
+          <option value="TEST COMMITTEE 1">Test Committee 1</option>
+          <option value="TEST COMMITTEE 2">Test Committee 2</option>
+          <option value="TEST COMMITTEE 3">Test Committee 3</option>
+          <option value="TEST COMMITTEE 4">Test Committee 4</option>
+          <option value="TEST COMMITTEE 5">Test Committee 5</option>
+          <option value="TEST COUNTRY 1">Test Country 1</option>
+          <option value="TEST COUNTRY 2">Test Country 2</option>
+          <option value="TEST COUNTRY 3">Test Country 3</option>
         </select>
+        <div class="field-sub">As designated by the Organising Committee</div>
       </div>
-    </div>
 
-    <div class="form-group" style="margin-bottom:0">
-      <label>Role / Committee <span class="req">*</span></label>
-      <select id="reg-role">
-        <option value="">Select your role…</option>
-        <option>Delegate</option>
-        <option>Chair</option>
-        <option>Vice-Chair</option>
-        <option>Rapporteur</option>
-        <option>Observer</option>
-        <option>Press Corps</option>
-        <option>Organiser</option>
-      </select>
-    </div>
+      <!-- PREVIEW -->
+      <div class="preview" id="previewBox">
+        <div class="preview-inner">
+          <div id="previewEmpty" class="preview-empty">Preview will appear here</div>
+          <div id="previewContent" style="display:none; text-align:center;">
+            <div class="preview-label">Certificate Issued To</div>
+            <div class="preview-name" id="previewName"></div>
+            <div class="preview-divider" id="previewDivider"></div>
+            <div class="preview-rep" id="previewRep"></div>
+          </div>
+        </div>
+      </div>
 
-    <div class="privacy-note">
-      <span class="icon">🔒</span>
-      <p>Your data is used exclusively for this event and certificate generation. No information is stored on external servers.</p>
-    </div>
+      <!-- DOWNLOAD -->
+      <div class="btn-group">
+        <div class="btn-note">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2">
+            <circle cx="6" cy="6" r="5"/>
+            <path d="M6 5.5v3M6 4h.01"/>
+          </svg>
+          PDF document · A4 format · print-ready
+        </div>
+        <button class="btn-download" id="downloadBtn" onclick="generatePDF()">
+          <span id="btnText">Download Certificate</span>
+          <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
+          </svg>
+        </button>
+      </div>
 
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="submitRegistration()">
-        Register &amp; Continue →
-      </button>
     </div>
   </div>
 
-  <!-- ── STEP 2: Certificate Generator ── -->
-  <div id="step2" class="card hidden">
-    <div class="success-banner">
-      <span class="icon">✅</span>
-      <p>Registration complete! You can now generate your official certificate.</p>
+  <!-- Footer -->
+  <div class="right-footer">
+    <div class="right-footer-left">
+      MEU Timișoara 2026 &nbsp;·&nbsp; Universitatea de Vest din Timișoara
     </div>
-
-    <div class="card-header">
-      <div class="card-tag">Step 2 of 2</div>
-      <h2>Generate Your Certificate</h2>
-      <p class="subtitle">Enter your full name exactly as it should appear on the certificate, then select what you are representing.</p>
+    <div class="right-footer-right">
+      <span class="ep-badge">Under the Patronage of the European Parliament</span>
     </div>
-
-    <div class="form-group">
-      <label>Full Name on Certificate <span class="req">*</span></label>
-      <input
-        type="text"
-        id="cert-name"
-        class="caps"
-        placeholder="e.g. MARIA IONESCU"
-        maxlength="50"
-        oninput="onNameInput(this)"
-      />
-      <div class="name-meter"><div class="name-meter-fill" id="nameMeter"></div></div>
-      <div class="input-hint" id="nameHint">Type in uppercase · max 50 characters</div>
-    </div>
-
-    <div class="form-group">
-      <label>Representing <span class="req">*</span></label>
-      <select id="cert-representing">
-        <option value="">Select what you represent…</option>
-        <option value="TEST COMMITTEE 1">Test Committee 1</option>
-        <option value="TEST COMMITTEE 2">Test Committee 2</option>
-        <option value="TEST COMMITTEE 3">Test Committee 3</option>
-        <option value="TEST COMMITTEE 4">Test Committee 4</option>
-        <option value="TEST COMMITTEE 5">Test Committee 5</option>
-        <option value="TEST COUNTRY 1">Test Country 1</option>
-        <option value="TEST COUNTRY 2">Test Country 2</option>
-        <option value="TEST COUNTRY 3">Test Country 3</option>
-      </select>
-      <div class="input-hint">This will appear as your represented delegation / committee</div>
-    </div>
-
-    <!-- Live Preview -->
-    <div id="previewBox" class="preview-box">
-      <div class="preview-label">Preview</div>
-      <div id="previewName" class="preview-name" style="font-size:1.4rem;">—</div>
-      <div id="previewRep" class="preview-representing hidden"></div>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-outline" onclick="goToStep(1)" style="flex:0 0 auto;width:auto;padding:14px 20px;">← Back</button>
-      <button class="btn btn-gold" id="downloadBtn" onclick="generatePDF()">
-        Download Certificate ↓
-      </button>
-    </div>
-
-    <div class="divider"><span>Under the patronage of the European Parliament</span></div>
-
-    <p style="text-align:center;font-size:.8rem;color:var(--muted);line-height:1.6;">
-      The certificate will be issued in PDF format and signed by<br />
-      <strong style="color:var(--navy);">Viorel Lambu</strong> · Director General &nbsp;&amp;&nbsp;
-      <strong style="color:var(--navy);">Paula Iovescu</strong> · Project Manager
-    </p>
   </div>
 
-</main>
+</div><!-- /panel-right -->
 
-<!-- ════════ FOOTER ════════ -->
-<footer>
-  <p>Model European Union Timișoara 2026 &nbsp;·&nbsp; <span>★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</span></p>
-  <p style="margin-top:6px;">Universitatea de Vest din Timișoara · Faculty of Governance and Communication Sciences</p>
-</footer>
 
 <script>
-  /* ═══════════════════════════════
-     STEP NAVIGATION
-  ═══════════════════════════════ */
-  function goToStep(n) {
-    document.getElementById('step1').classList.toggle('hidden', n !== 1);
-    document.getElementById('step2').classList.toggle('hidden', n !== 2);
-
-    // Update step indicators
-    const s1 = document.getElementById('s1');
-    const s2 = document.getElementById('s2');
-    const sc = document.getElementById('sc1');
-    const sl1 = document.getElementById('sl1');
-    const sl2 = document.getElementById('sl2');
-
-    if (n === 1) {
-      s1.className = 'step-num active';   sl1.className = 'step-label active';
-      s2.className = 'step-num';          sl2.className = 'step-label';
-      sc.className = 'step-connector';
-    } else {
-      s1.className = 'step-num done';     sl1.className = 'step-label';
-      s2.className = 'step-num active';   sl2.className = 'step-label active';
-      sc.className = 'step-connector done';
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  /* ═══════════════════════════════
-     REGISTRATION (fake submit)
-  ═══════════════════════════════ */
-  function submitRegistration() {
-    const first    = document.getElementById('reg-first').value.trim();
-    const last     = document.getElementById('reg-last').value.trim();
-    const email    = document.getElementById('reg-email').value.trim();
-    const uni      = document.getElementById('reg-uni').value.trim();
-    const country  = document.getElementById('reg-country').value;
-    const role     = document.getElementById('reg-role').value;
-
-    if (!first || !last || !email || !uni || !country || !role) {
-      shake(event.target);
-      alert('Please fill in all required fields.');
-      return;
-    }
-
-    // Pre-fill name on cert page
-    const certName = document.getElementById('cert-name');
-    certName.value = (first + ' ' + last).toUpperCase();
-    onNameInput(certName);
-
-    goToStep(2);
-  }
-
-  /* ═══════════════════════════════
-     NAME INPUT — uppercase + preview
-  ═══════════════════════════════ */
+  /* ── NAME INPUT ── */
   function onNameInput(el) {
-    // Force uppercase
     const start = el.selectionStart;
     el.value = el.value.toUpperCase();
     el.setSelectionRange(start, start);
-
     const len = el.value.length;
-    const max = 50;
-
-    // Meter
-    document.getElementById('nameMeter').style.width = (len / max * 100) + '%';
-
-    // Hint
+    document.getElementById('nameMeter').style.width = (len / 50 * 100) + '%';
     const hint = document.getElementById('nameHint');
     if (len > 40) {
-      hint.textContent = `${max - len} characters remaining`;
-      hint.className = 'input-hint warn';
+      hint.textContent = `${50 - len} characters remaining`;
+      hint.className = 'field-sub warn';
     } else {
-      hint.textContent = 'Type in uppercase · max 50 characters';
-      hint.className = 'input-hint';
+      hint.textContent = 'Name will appear in title case on the certificate';
+      hint.className = 'field-sub';
     }
-
     updatePreview();
   }
 
-  document.getElementById('cert-representing').addEventListener('change', updatePreview);
-
+  /* ── PREVIEW ── */
   function updatePreview() {
     const name = document.getElementById('cert-name').value.trim();
     const rep  = document.getElementById('cert-representing').value;
     const box  = document.getElementById('previewBox');
     const pn   = document.getElementById('previewName');
     const pr   = document.getElementById('previewRep');
+    const div  = document.getElementById('previewDivider');
+    const empty   = document.getElementById('previewEmpty');
+    const content = document.getElementById('previewContent');
+
+    const toTitle = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 
     if (name) {
-      box.classList.add('has-content');
-      pn.textContent = name;
-
-      // Dynamic font size based on name length
+      empty.style.display = 'none';
+      content.style.display = 'block';
+      box.classList.add('active');
+      pn.textContent = toTitle(name);
       const len = name.length;
-      if      (len <= 16) pn.style.fontSize = '2rem';
-      else if (len <= 24) pn.style.fontSize = '1.6rem';
-      else if (len <= 34) pn.style.fontSize = '1.3rem';
-      else                pn.style.fontSize = '1.05rem';
+      pn.style.fontSize = len <= 16 ? '2.2rem' : len <= 24 ? '1.8rem' : len <= 34 ? '1.4rem' : '1.1rem';
     } else {
-      box.classList.remove('has-content');
-      pn.textContent = '—';
-      pn.style.fontSize = '1.4rem';
+      empty.style.display = 'block';
+      content.style.display = 'none';
+      box.classList.remove('active');
     }
 
     if (rep) {
       pr.textContent = rep;
-      pr.classList.remove('hidden');
+      pr.style.display = 'block';
+      div.style.display = 'block';
     } else {
-      pr.classList.add('hidden');
+      pr.style.display = 'none';
+      div.style.display = 'none';
     }
   }
 
-  /* ═══════════════════════════════
-     PDF GENERATION
-  ═══════════════════════════════ */
+  /* ── PDF GENERATION ── */
   async function generatePDF() {
     const name = document.getElementById('cert-name').value.trim();
     const rep  = document.getElementById('cert-representing').value;
 
-    if (!name) { alert('Please enter your full name for the certificate.'); return; }
-    if (!rep)  { alert('Please select what you are representing.'); return; }
+    if (!name) { alert('Please enter your full name.'); return; }
+    if (!rep)  { alert('Please select your delegation or committee.'); return; }
 
-    const btn = document.getElementById('downloadBtn');
-    btn.innerHTML = '<span class="spinner"></span> Generating…';
+    const btn     = document.getElementById('downloadBtn');
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+
+    btnText.textContent = 'Generating…';
+    btnIcon.outerHTML = `<span class="spinner" id="btnIcon"></span>`;
     btn.disabled = true;
 
     try {
       const { PDFDocument, rgb, StandardFonts } = PDFLib;
 
-      // Load template PDF
       const templateBytes = await fetch('Diploma__1_.pdf').then(r => {
-        if (!r.ok) throw new Error('Template PDF not found. Make sure Diploma__1_.pdf is in the same folder.');
+        if (!r.ok) throw new Error('Certificate template not found.');
         return r.arrayBuffer();
       });
 
       const pdfDoc = await PDFDocument.load(templateBytes);
       const page   = pdfDoc.getPages()[0];
-      const { width, height } = page.getSize();
-
-      // Embed fallback font
+      const { width } = page.getSize();
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      // Load Dancing Script TTF (cursive, supports diacritics)
-      // Fetching without browser UA causes Google Fonts to return TTF instead of woff2
+      // Load Dancing Script TTF for cursive name
       let nameFont = fontBold;
       try {
-        const cssResp = await fetch('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700', {
-          headers: { 'User-Agent': 'Mozilla/4.0' }
-        });
-        const css = await cssResp.text();
-        const ttfMatch = css.match(/src:\s*url\(([^)]+)\)/);
-        if (ttfMatch) {
-          const ttfResp = await fetch(ttfMatch[1]);
-          const ttfData = await ttfResp.arrayBuffer();
+        const css = await fetch(
+          'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700',
+          { headers: { 'User-Agent': 'Mozilla/4.0' } }
+        ).then(r => r.text());
+        const match = css.match(/src:\s*url\(([^)]+\.ttf[^)]*)\)/i) || css.match(/src:\s*url\(([^)]+)\)/);
+        if (match) {
+          const ttfData = await fetch(match[1]).then(r => r.arrayBuffer());
           nameFont = await pdfDoc.embedFont(ttfData);
         }
-      } catch(e) {
-        console.warn('Could not load Dancing Script, using fallback:', e);
-      }
+      } catch(e) { console.warn('Dancing Script unavailable.'); }
 
-      // ── Title Case helper (for cursive display) ──
-      const toTitleCase = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-      const nameDisplay = toTitleCase(name);
-
-      // ── Dynamic font size for name based on length ──
+      const toTitle = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+      const nameDisplay = toTitle(name);
       const nameLen = nameDisplay.length;
-      let nameFontSize;
-      if      (nameLen <= 14) nameFontSize = 46;
-      else if (nameLen <= 20) nameFontSize = 40;
-      else if (nameLen <= 28) nameFontSize = 34;
-      else if (nameLen <= 36) nameFontSize = 28;
-      else                    nameFontSize = 22;
+      const nameFontSize = nameLen <= 14 ? 46 : nameLen <= 20 ? 40 : nameLen <= 28 ? 34 : nameLen <= 36 ? 28 : 22;
 
-      // ── Center text helper ──
-      function centerX(text, font, size) {
-        const w = font.widthOfTextAtSize(text, size);
-        return (width - w) / 2;
-      }
-
-      // ── Color ──
+      const centerX = (text, font, size) => (width - font.widthOfTextAtSize(text, size)) / 2;
       const blue = rgb(0.051, 0.133, 0.318);
 
-      // ── NAME (calibrated: y=1050) ──
+      // NAME — calibrated y=1050
       page.drawText(nameDisplay, {
         x: centerX(nameDisplay, nameFont, nameFontSize),
         y: 1050,
@@ -960,61 +941,59 @@
         color: blue,
       });
 
-      // ── REPRESENTING (calibrated: y=775) ──
+      // REPRESENTING — calibrated y=760
       const repFontSize = rep.length > 28 ? 22 : rep.length > 20 ? 26 : 30;
       page.drawText(rep, {
         x: centerX(rep, fontBold, repFontSize),
-        y: 775,
+        y: 760,
         size: repFontSize,
         font: fontBold,
         color: blue,
       });
 
-      // Save + trigger download
-      const pdfBytes  = await pdfDoc.save();
-      const blob      = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url       = URL.createObjectURL(blob);
-      const a         = document.createElement('a');
-      a.href          = url;
-      a.download      = `Certificate_MEU_Timisoara_2026_${name.replace(/\s+/g, '_')}.pdf`;
+      const bytes = await pdfDoc.save();
+      const blob  = new Blob([bytes], { type: 'application/pdf' });
+      const url   = URL.createObjectURL(blob);
+      const a     = document.createElement('a');
+      a.href = url;
+      a.download = `Certificate_MEU_Timisoara_2026_${name.replace(/\s+/g, '_')}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      btn.innerHTML = '✓ Certificate Downloaded!';
+      // Success state
+      document.getElementById('btnIcon').outerHTML = `
+        <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="2,8 6,12 14,4"/>
+        </svg>`;
+      document.getElementById('btnText').textContent = 'Certificate Downloaded';
+      btn.style.background = '#1a4a2e';
+      btn.style.borderColor = '#1a4a2e';
+
       setTimeout(() => {
-        btn.innerHTML = 'Download Certificate ↓';
+        document.getElementById('btnText').textContent = 'Download Certificate';
+        document.getElementById('btnIcon').outerHTML = `
+          <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
+          </svg>`;
+        btn.style.background = '';
+        btn.style.borderColor = '';
         btn.disabled = false;
-      }, 3000);
+      }, 3500);
 
     } catch (err) {
       console.error(err);
       alert('Error generating certificate:\n' + err.message);
-      btn.innerHTML = 'Download Certificate ↓';
+      document.getElementById('btnText').textContent = 'Download Certificate';
+      document.getElementById('btnIcon').outerHTML = `
+        <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
+        </svg>`;
       btn.disabled = false;
     }
   }
-
-  /* ═══════════════════════════════
-     SHAKE animation for validation
-  ═══════════════════════════════ */
-  function shake(el) {
-    el.style.animation = 'none';
-    el.offsetHeight; // reflow
-    el.style.animation = 'shake .4s ease';
-  }
 </script>
-
-<style>
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  20%      { transform: translateX(-8px); }
-  40%      { transform: translateX(8px); }
-  60%      { transform: translateX(-5px); }
-  80%      { transform: translateX(5px); }
-}
-</style>
 
 </body>
 </html>
