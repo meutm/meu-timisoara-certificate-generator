@@ -930,9 +930,8 @@
       // ── Color ──
       const blue = rgb(0.051, 0.133, 0.318); // #0d2251 navy
 
-      // ── NAME (below "Recognized" line) ──
-      // Approximate Y position based on template: ~615 pt from bottom
-      const nameY = 614;
+      // ── NAME (on the line below "Recognized") ──
+      const nameY = 926;
       page.drawText(name, {
         x: centerX(name, fontBold, nameFontSize),
         y: nameY,
@@ -941,10 +940,9 @@
         color: blue,
       });
 
-      // ── REPRESENTING (below "Representing" line) ──
-      // Approximate Y position: ~455 pt from bottom
+      // ── REPRESENTING (on the line below "Representing") ──
       const repFontSize = rep.length > 22 ? 15 : 18;
-      const repY = 454;
+      const repY = 707;
       page.drawText(rep, {
         x: centerX(rep, fontBold, repFontSize),
         y: repY,
