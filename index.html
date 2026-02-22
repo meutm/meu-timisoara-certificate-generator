@@ -116,30 +116,84 @@
     .rfl{font-size:.67rem;font-weight:300;color:var(--muted);}
     .rfr{font-size:.63rem;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);opacity:.55;}
 
-    /* RESPONSIVE */
-    @media(max-width:960px){
-      body{grid-template-columns:1fr;}
-      .pl{position:static;height:auto;padding:36px 28px;order:2;}
-      .pr{order:1;}
-      .lft{display:none;}
-      .ring{display:none;}
-      .lh{font-size:1.75rem;}
-      .ls2{margin-bottom:20px;}
-      .ml{display:grid;grid-template-columns:1fr 1fr;}
-    }
-    @media(max-width:640px){
-      .rm{padding:28px 20px;}
-      .tb,.rf{padding:0 20px;}
-      .rr{grid-template-columns:1fr;}
-      .rr select:first-child{border-right:1px solid var(--rule);border-bottom:none;}
-      .ft{font-size:1.75rem;}
-    }
-    @media(max-width:380px){
-      .pl{padding:24px 16px;}
-      .rm{padding:20px 14px;}
-      .tb,.rf{padding:0 14px;}
-      .ml{grid-template-columns:1fr;}
-    }
+/* RESPONSIVE */
+
+/* Tablet landscape */
+@media(max-width:1100px){
+  body{grid-template-columns:300px 1fr;}
+  .pl{padding:40px 28px;}
+  .lh{font-size:2rem;}
+  .rm{padding:36px 40px;}
+  .tb,.rf{padding:0 40px;}
+}
+
+/* Tablet portrait — stacked layout */
+@media(max-width:900px){
+  body{grid-template-columns:1fr;grid-template-rows:auto auto;}
+  .pl{
+    position:static;height:auto;
+    padding:32px 40px 36px;order:2;
+  }
+  .pr{order:1;}
+  .lft{display:none;}
+  .ring{display:none;}
+  .lh{font-size:1.8rem;margin-bottom:6px;}
+  .ls2{margin-bottom:20px;}
+  .lt{margin-bottom:0;position:absolute;top:32px;right:40px;}
+  .li{position:relative;}
+  .ml{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+  }
+  .mi{border-right:none;}
+}
+
+/* Mobile large */
+@media(max-width:640px){
+  .rm{padding:28px 24px;}
+  .tb,.rf{padding:0 24px;}
+  .ft{font-size:1.7rem;}
+  .fd{font-size:.8rem;margin-bottom:24px;}
+  .rr{grid-template-columns:1fr;}
+  .rr select:first-child{
+    border-right:1px solid var(--rule);
+    border-bottom:none;
+  }
+  /* Stack topbar items */
+  .tb{height:auto;padding:12px 24px;flex-direction:column;align-items:flex-start;gap:6px;}
+  /* Footer compact */
+  .rf{height:auto;padding:12px 24px;flex-direction:column;align-items:flex-start;gap:3px;}
+  .rfr{opacity:.45;}
+  /* Left panel */
+  .pl{padding:28px 24px 32px;}
+  .lt{top:28px;right:24px;}
+}
+
+/* Mobile small */
+@media(max-width:430px){
+  .rm{padding:20px 16px;}
+  .tb,.rf{padding:10px 16px;}
+  .pl{padding:24px 16px 28px;}
+  .lt{top:24px;right:16px;}
+  .ft{font-size:1.5rem;}
+  .ml{grid-template-columns:1fr;}
+  /* Inputs full touch size */
+  input[type="text"],select{padding:14px 12px;font-size:.9rem;}
+  .bd{padding:17px 16px;}
+  /* Preview smaller */
+  .pvi{padding:18px 16px;}
+  .pvn{font-size:1.6rem!important;}
+}
+
+/* Very small — iPhone SE etc */
+@media(max-width:360px){
+  .lh{font-size:1.5rem;}
+  .ft{font-size:1.35rem;}
+  .rm{padding:16px 12px;}
+  .pl{padding:20px 12px 24px;}
+  .lt{top:20px;right:12px;}
+}
   </style>
 </head>
 <body>
