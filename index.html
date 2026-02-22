@@ -3,997 +3,486 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MEU Timișoara 2026 — Certificate Portal</title>
+  <title>MEU Timisoara 2026 - Certificate Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
   <style>
-    :root {
-      --ink:       #0b1626;
-      --ink-2:     #1c2e4a;
-      --ink-3:     #2e4a6e;
-      --gold:      #b8902a;
-      --gold-pale: #e8d49a;
-      --rule:      #d6dce8;
-      --rule-dark: rgba(255,255,255,.1);
-      --paper:     #f7f6f2;
-      --white:     #ffffff;
-      --muted:     #8a96aa;
-      --error:     #b22222;
-    }
+    :root{--ink:#0b1626;--ink2:#1c2e4a;--ink3:#2e4a6e;--gold:#b8902a;--pale:#e8d49a;--rule:#d6dce8;--rdark:rgba(255,255,255,.09);--paper:#f7f6f2;--white:#fff;--muted:#8a96aa;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{height:100%;}
+    body{font-family:'Jost',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:grid;grid-template-columns:360px 1fr;}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; height: 100%; }
+    /* LEFT */
+    .pl{background:var(--ink);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:48px 40px;overflow:hidden;}
+    .pl::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;}
+    .pl::after{content:'';position:absolute;bottom:-100px;right:-100px;width:360px;height:360px;border:1px solid rgba(184,144,42,.12);border-radius:50%;pointer-events:none;}
+    .li{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;}
 
-    body {
-      font-family: 'Jost', sans-serif;
-      background: var(--paper);
-      color: var(--ink);
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      grid-template-rows: auto 1fr auto;
-    }
-
-    /* ════════ LEFT PANEL ════════ */
-    .panel-left {
-      grid-column: 1;
-      grid-row: 1 / 4;
-      background: var(--ink);
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      padding: 52px 44px;
-    }
-
-    /* subtle grid texture */
-    .panel-left::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-    }
-
-    /* diagonal accent */
-    .panel-left::after {
-      content: '';
-      position: absolute;
-      bottom: -80px;
-      right: -80px;
-      width: 320px;
-      height: 320px;
-      border: 1px solid rgba(184,144,42,.2);
-      transform: rotate(15deg);
-      pointer-events: none;
-    }
-
-    .left-inner { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; }
-
-    /* top wordmark */
-    .wordmark {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 64px;
-    }
-    .wordmark-line {
-      width: 24px;
-      height: 1px;
-      background: var(--gold);
-    }
-    .wordmark-text {
-      font-size: .7rem;
-      font-weight: 500;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.45);
-    }
+    /* Lang toggle */
+    .lt{display:inline-flex;align-items:center;align-self:flex-start;margin-bottom:44px;border:1px solid var(--rdark);border-radius:3px;overflow:hidden;}
+    .lb{padding:5px 13px;font-family:'Jost',sans-serif;font-size:.65rem;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.32);background:transparent;border:none;cursor:pointer;transition:all .18s;}
+    .lb.on{background:var(--gold);color:#fff;}
+    .ls{width:1px;height:26px;background:var(--rdark);}
 
     /* EU ring */
-    .eu-ring {
-      position: relative;
-      width: 64px;
-      height: 64px;
-      margin-bottom: 36px;
-    }
-    .eu-ring svg {
-      width: 64px;
-      height: 64px;
-      animation: slowRotate 30s linear infinite;
-    }
-    @keyframes slowRotate {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
+    .ring{width:52px;height:52px;margin-bottom:28px;}
+    .ring svg{animation:spin 40s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
 
-    .left-heading {
-      font-family: 'Cormorant', serif;
-      font-size: 2.6rem;
-      font-weight: 300;
-      line-height: 1.15;
-      color: var(--white);
-      letter-spacing: -.5px;
-      margin-bottom: 8px;
-    }
-    .left-heading em {
-      font-style: italic;
-      color: var(--gold-pale);
-    }
+    .lh{font-family:'Cormorant',serif;font-size:2.3rem;font-weight:300;line-height:1.18;color:#fff;margin-bottom:7px;}
+    .lh em{font-style:italic;color:var(--pale);}
+    .ls2{font-size:.78rem;font-weight:300;color:rgba(255,255,255,.36);letter-spacing:.4px;margin-bottom:36px;line-height:1.5;}
 
-    .left-subtitle {
-      font-size: .82rem;
-      font-weight: 300;
-      color: rgba(255,255,255,.4);
-      letter-spacing: .5px;
-      margin-bottom: 48px;
-      line-height: 1.6;
-    }
+    .ml{list-style:none;border-top:1px solid var(--rdark);}
+    .mi{display:flex;align-items:flex-start;gap:11px;padding:13px 0;border-bottom:1px solid var(--rdark);}
+    .mic{flex-shrink:0;margin-top:1px;opacity:.42;}
+    .mil{display:block;font-size:.6rem;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;}
+    .miv{font-size:.78rem;font-weight:300;color:rgba(255,255,255,.62);}
 
-    /* meta list */
-    .meta-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      border-top: 1px solid var(--rule-dark);
-    }
-    .meta-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--rule-dark);
-    }
-    .meta-icon {
-      width: 16px;
-      flex-shrink: 0;
-      margin-top: 1px;
-      opacity: .5;
-    }
-    .meta-label {
-      font-size: .65rem;
-      font-weight: 600;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--gold);
-      display: block;
-      margin-bottom: 3px;
-    }
-    .meta-value {
-      font-size: .82rem;
-      font-weight: 300;
-      color: rgba(255,255,255,.7);
-      letter-spacing: .2px;
-    }
+    .lft{margin-top:auto;padding-top:24px;border-top:1px solid var(--rdark);}
+    .lfl{font-size:.6rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:10px;}
+    .sg{margin-bottom:7px;}
+    .sgn{font-size:.76rem;font-weight:500;color:rgba(255,255,255,.58);display:block;}
+    .sgr{font-size:.67rem;font-weight:300;color:rgba(255,255,255,.26);}
 
-    /* left footer */
-    .left-footer {
-      margin-top: auto;
-      padding-top: 32px;
-      border-top: 1px solid var(--rule-dark);
-    }
-    .left-footer-label {
-      font-size: .65rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.25);
-      margin-bottom: 10px;
-    }
-    .signatories {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .signatory {
-      display: flex;
-      flex-direction: column;
-    }
-    .signatory-name {
-      font-size: .8rem;
-      font-weight: 500;
-      color: rgba(255,255,255,.65);
-      letter-spacing: .3px;
-    }
-    .signatory-role {
-      font-size: .7rem;
-      font-weight: 300;
-      color: rgba(255,255,255,.3);
-      letter-spacing: .5px;
-    }
+    /* RIGHT */
+    .pr{display:flex;flex-direction:column;min-height:100vh;}
+    .tb{height:50px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 52px;flex-shrink:0;}
+    .tbl{font-size:.66rem;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);}
+    .sp{display:flex;align-items:center;gap:6px;}
+    .sd{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 2.5s ease-in-out infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+    .st{font-size:.65rem;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);}
 
-    /* ════════ RIGHT PANEL ════════ */
-    .panel-right {
-      grid-column: 2;
-      grid-row: 1 / 4;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+    .rm{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 52px;}
+    .fw{width:100%;max-width:500px;}
 
-    /* top rule */
-    .right-topbar {
-      height: 56px;
-      border-bottom: 1px solid var(--rule);
-      display: flex;
-      align-items: center;
-      padding: 0 56px;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .right-topbar-left {
-      font-size: .72rem;
-      font-weight: 500;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .right-topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .status-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #22c55e;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .6; transform: scale(.85); }
-    }
-    .status-text {
-      font-size: .7rem;
-      font-weight: 500;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
+    .fe{display:flex;align-items:center;gap:11px;margin-bottom:13px;}
+    .fel{width:26px;height:1px;background:var(--gold);}
+    .fet{font-size:.63rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);}
 
-    /* main content area */
-    .right-main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 56px;
-    }
+    .ft{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:600;color:var(--ink);line-height:1.15;letter-spacing:-.3px;margin-bottom:8px;}
+    .fd{font-size:.83rem;font-weight:300;color:var(--muted);line-height:1.65;margin-bottom:32px;}
 
-    .form-container {
-      width: 100%;
-      max-width: 520px;
-    }
+    .fi{margin-bottom:22px;}
+    .fll{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+    .fll svg{color:var(--muted);flex-shrink:0;}
+    .flt{font-size:.66rem;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink2);}
+    .freq{color:var(--gold);font-size:.85rem;line-height:1;}
 
-    /* section heading */
-    .form-heading {
-      margin-bottom: 48px;
-    }
-    .form-heading-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .form-heading-eyebrow-line {
-      width: 32px;
-      height: 1px;
-      background: var(--gold);
-    }
-    .form-heading-eyebrow-text {
-      font-size: .68rem;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-    .form-heading h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.4rem;
-      font-weight: 600;
-      color: var(--ink);
-      line-height: 1.15;
-      letter-spacing: -.5px;
-      margin-bottom: 10px;
-    }
-    .form-heading p {
-      font-size: .85rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.65;
-      max-width: 400px;
-    }
+    input[type="text"],select{width:100%;padding:13px 14px;border:1px solid var(--rule);border-radius:0;font-family:'Jost',sans-serif;font-size:.88rem;color:var(--ink);background:#fff;outline:none;appearance:none;transition:border-color .18s,box-shadow .18s;}
+    input[type="text"]:focus,select:focus{border-color:var(--ink3);box-shadow:0 0 0 2px rgba(46,74,110,.07);}
+    input.caps{text-transform:uppercase;letter-spacing:1.8px;font-weight:500;font-size:.84rem;}
+    input.caps::placeholder{text-transform:none;letter-spacing:.2px;font-weight:300;color:#bcc4d4;}
+    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230b1626' stroke-width='1.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;cursor:pointer;}
+    select:disabled{opacity:.38;cursor:not-allowed;background-color:#f8f9fc;}
 
-    /* fields */
-    .field {
-      margin-bottom: 28px;
-    }
+    .rr{display:grid;grid-template-columns:1fr 1fr;}
+    .rr select:first-child{border-right:none;}
+    .rr select:first-child:focus{z-index:1;position:relative;border-right:1px solid var(--ink3);}
 
-    .field-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .field-label-icon {
-      width: 14px;
-      height: 14px;
-      color: var(--muted);
-      flex-shrink: 0;
-    }
-    .field-label-text {
-      font-size: .7rem;
-      font-weight: 600;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--ink-2);
-    }
-    .field-label-req {
-      color: var(--gold);
-      font-size: .8rem;
-      margin-left: 2px;
-      line-height: 1;
-    }
+    .pt{height:1px;background:var(--rule);margin-top:6px;overflow:hidden;}
+    .pf{height:100%;background:linear-gradient(90deg,var(--gold),var(--ink3));transition:width .3s;width:0%;}
+    .fsh{margin-top:5px;font-size:.69rem;font-weight:300;color:var(--muted);line-height:1.5;}
+    .fsh.warn{color:#b22222;font-weight:500;}
 
-    input[type="text"], select {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid var(--rule);
-      border-radius: 0;
-      font-family: 'Jost', sans-serif;
-      font-size: .92rem;
-      color: var(--ink);
-      background: var(--white);
-      outline: none;
-      appearance: none;
-      transition: border-color .2s, box-shadow .2s;
-      letter-spacing: .2px;
-    }
-    input[type="text"]:focus, select:focus {
-      border-color: var(--ink-3);
-      box-shadow: 0 0 0 2px rgba(46,74,110,.08);
-    }
-    input.caps {
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 500;
-      font-size: .88rem;
-    }
-    input.caps::placeholder {
-      text-transform: none;
-      letter-spacing: .2px;
-      font-weight: 300;
-      color: #bcc4d4;
-    }
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%230b1626' stroke-width='1.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      padding-right: 42px;
-      cursor: pointer;
-    }
-    select option { font-weight: 300; }
+    /* Preview */
+    .pv{border:1px solid var(--rule);background:#fff;margin:24px 0;min-height:110px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;transition:border-color .25s;}
+    .pv::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--rule);transition:background .25s;}
+    .pv.on{border-color:rgba(184,144,42,.45);}
+    .pv.on::before{background:var(--gold);}
+    .pvi{padding:22px 26px;text-align:center;width:100%;}
+    .pve{font-size:.58rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:11px;}
+    .pvn{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;color:var(--ink);font-size:1.85rem;line-height:1.2;word-break:break-word;transition:font-size .22s;}
+    .pvd{width:18px;height:1px;background:var(--gold);margin:11px auto;}
+    .pvr{font-size:.7rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);}
+    .pvem{font-size:.78rem;font-weight:300;color:#ccd2df;letter-spacing:.3px;}
 
-    /* progress bar */
-    .progress-track {
-      height: 1px;
-      background: var(--rule);
-      margin-top: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-    .progress-fill {
-      position: absolute;
-      left: 0; top: 0; height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--ink-3));
-      transition: width .3s ease;
-      width: 0%;
-    }
-    .field-sub {
-      margin-top: 6px;
-      font-size: .72rem;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: .2px;
-    }
-    .field-sub.warn {
-      color: var(--error);
-      font-weight: 500;
-    }
+    /* Button */
+    .bn{display:flex;align-items:center;gap:7px;font-size:.66rem;font-weight:300;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--rule);}
+    .bd{width:100%;padding:16px 20px;background:var(--ink);color:#fff;font-family:'Jost',sans-serif;font-size:.76rem;font-weight:500;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;transition:background .2s,border-color .2s;}
+    .bd::before{content:'';position:absolute;left:0;top:0;height:100%;width:0%;background:var(--gold);transition:width .38s ease;z-index:0;}
+    .bd:hover::before{width:100%;}
+    .bd:hover{border-color:var(--gold);}
+    .bd>*{position:relative;z-index:1;}
+    .bd:disabled{opacity:.52;cursor:not-allowed;}
+    .bd:disabled::before{display:none;}
+    .sp2{width:14px;height:14px;border:1.5px solid rgba(255,255,255,.22);border-top-color:#fff;border-radius:50%;animation:spn .7s linear infinite;}
+    @keyframes spn{to{transform:rotate(360deg);}}
 
-    /* ── PREVIEW ── */
-    .preview {
-      margin: 36px 0;
-      border: 1px solid var(--rule);
-      background: var(--white);
-      position: relative;
-      overflow: hidden;
-      min-height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color .3s;
-    }
-    .preview::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--rule);
-      transition: background .3s;
-    }
-    .preview.active { border-color: var(--gold); }
-    .preview.active::before { background: var(--gold); }
+    .rf{height:50px;border-top:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 52px;flex-shrink:0;}
+    .rfl{font-size:.67rem;font-weight:300;color:var(--muted);}
+    .rfr{font-size:.63rem;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);opacity:.55;}
 
-    .preview-inner {
-      padding: 28px 32px;
-      text-align: center;
-      width: 100%;
+    /* RESPONSIVE */
+    @media(max-width:960px){
+      body{grid-template-columns:1fr;}
+      .pl{position:static;height:auto;padding:36px 28px;order:2;}
+      .pr{order:1;}
+      .lft{display:none;}
+      .ring{display:none;}
+      .lh{font-size:1.75rem;}
+      .ls2{margin-bottom:20px;}
+      .ml{display:grid;grid-template-columns:1fr 1fr;}
     }
-    .preview-label {
-      font-size: .63rem;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
+    @media(max-width:640px){
+      .rm{padding:28px 20px;}
+      .tb,.rf{padding:0 20px;}
+      .rr{grid-template-columns:1fr;}
+      .rr select:first-child{border-right:1px solid var(--rule);border-bottom:none;}
+      .ft{font-size:1.75rem;}
     }
-    .preview-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--ink);
-      line-height: 1.2;
-      transition: font-size .3s;
-      font-size: 2rem;
-      word-break: break-word;
-    }
-    .preview-divider {
-      width: 24px;
-      height: 1px;
-      background: var(--gold);
-      margin: 14px auto;
-      display: none;
-    }
-    .preview-rep {
-      font-size: .75rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--ink-3);
-      display: none;
-    }
-    .preview-empty {
-      font-size: .82rem;
-      font-weight: 300;
-      color: var(--rule);
-      letter-spacing: .5px;
-    }
-
-    /* ── DOWNLOAD BUTTON ── */
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .btn-download {
-      width: 100%;
-      padding: 18px 24px;
-      background: var(--ink);
-      color: var(--white);
-      font-family: 'Jost', sans-serif;
-      font-size: .82rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      border: 1px solid var(--ink);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background .2s, border-color .2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-download::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; height: 100%;
-      width: 0%;
-      background: var(--gold);
-      transition: width .4s ease;
-      z-index: 0;
-    }
-    .btn-download:hover::before { width: 100%; }
-    .btn-download:hover { border-color: var(--gold); }
-    .btn-download span,
-    .btn-download svg { position: relative; z-index: 1; }
-    .btn-download:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-    .btn-download:disabled::before { display: none; }
-
-    .btn-note {
-      padding: 12px 0;
-      font-size: .7rem;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: .3px;
-      border-bottom: 1px solid var(--rule);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn-note svg { flex-shrink: 0; }
-
-    .spinner {
-      width: 16px; height: 16px;
-      border: 1.5px solid rgba(255,255,255,.25);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── RIGHT FOOTER ── */
-    .right-footer {
-      height: 56px;
-      border-top: 1px solid var(--rule);
-      padding: 0 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .right-footer-left {
-      font-size: .7rem;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: .3px;
-    }
-    .right-footer-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .ep-badge {
-      font-size: .65rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--muted);
-      opacity: .7;
-    }
-
-    /* ════════ RESPONSIVE ════════ */
-    @media (max-width: 900px) {
-      body {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto auto;
-      }
-      .panel-left {
-        position: static;
-        height: auto;
-        grid-row: 2;
-        padding: 40px 32px;
-      }
-      .panel-right {
-        grid-column: 1;
-        grid-row: 1;
-      }
-      .right-main {
-        padding: 40px 32px;
-      }
-      .right-topbar, .right-footer {
-        padding: 0 32px;
-      }
-      .left-footer { display: none; }
-      .meta-list { flex-direction: row; flex-wrap: wrap; }
-      .meta-item { flex: 1 1 45%; border-right: none; }
-      .eu-ring { display: none; }
-    }
-    @media (max-width: 520px) {
-      .right-main { padding: 32px 20px; }
-      .right-topbar, .right-footer { padding: 0 20px; }
-      .panel-left { padding: 32px 20px; }
-      .form-heading h1 { font-size: 1.9rem; }
+    @media(max-width:380px){
+      .pl{padding:24px 16px;}
+      .rm{padding:20px 14px;}
+      .tb,.rf{padding:0 14px;}
+      .ml{grid-template-columns:1fr;}
     }
   </style>
 </head>
 <body>
 
-<!-- ════════════ LEFT PANEL ════════════ -->
-<aside class="panel-left">
-  <div class="left-inner">
-
-    <div class="wordmark">
-      <div class="wordmark-line"></div>
-      <div class="wordmark-text">MEU · Certificate Portal</div>
+<!-- LEFT -->
+<aside class="pl">
+  <div class="li">
+    <div class="lt">
+      <button class="lb on" onclick="setLang('en')" id="btn-en">EN</button>
+      <div class="ls"></div>
+      <button class="lb" onclick="setLang('ro')" id="btn-ro">RO</button>
     </div>
 
-    <!-- Animated EU ring SVG -->
-    <div class="eu-ring">
-      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="32" cy="32" r="28" stroke="rgba(184,144,42,.25)" stroke-width=".75"/>
-        <!-- 12 stars on the ring -->
-        <g fill="#b8902a" opacity=".8">
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(0 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(30 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(60 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(90 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(120 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(150 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(180 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(210 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(240 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(270 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(300 32 32)"/>
-          <polygon points="32,5 32.9,7.8 35.8,7.8 33.5,9.4 34.3,12.2 32,10.6 29.7,12.2 30.5,9.4 28.2,7.8 31.1,7.8" transform="rotate(330 32 32)"/>
+    <div class="ring">
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <circle cx="26" cy="26" r="22" stroke="rgba(184,144,42,.18)" stroke-width=".75"/>
+        <g fill="#b8902a" opacity=".72">
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(0 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(30 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(60 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(90 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(120 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(150 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(180 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(210 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(240 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(270 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(300 26 26)"/>
+          <polygon points="26,5 26.75,7.2 29.1,7.2 27.2,8.55 27.95,10.75 26,9.4 24.05,10.75 24.8,8.55 22.9,7.2 25.25,7.2" transform="rotate(330 26 26)"/>
         </g>
       </svg>
     </div>
 
-    <h2 class="left-heading">
-      Model<br />European<br />Union <em>Timișoara</em>
-    </h2>
-    <p class="left-subtitle">First Edition · 2026<br />Participation Certificate</p>
+    <h2 class="lh">Model<br/>European<br/>Union <em>Timisoara</em></h2>
+    <p class="ls2" id="lsub">First Edition &middot; 2026 &middot; Participation Certificate</p>
 
-    <ul class="meta-list">
-      <li class="meta-item">
-        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
-          <rect x="1" y="3" width="14" height="12" rx="1"/>
-          <path d="M1 7h14M5 1v4M11 1v4"/>
-        </svg>
-        <div>
-          <span class="meta-label">Dates</span>
-          <span class="meta-value">25–29 March 2026</span>
-        </div>
+    <ul class="ml">
+      <li class="mi">
+        <svg class="mic" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.1"><rect x="1" y="2" width="11" height="10" rx=".8"/><path d="M1 5.5h11M4 1v2.5M9 1v2.5"/></svg>
+        <div><span class="mil" id="m1">Dates</span><span class="miv">25&ndash;29 March 2026</span></div>
       </li>
-      <li class="meta-item">
-        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
-          <path d="M8 1C5.24 1 3 3.24 3 6c0 3.75 5 9 5 9s5-5.25 5-9c0-2.76-2.24-5-5-5z"/>
-          <circle cx="8" cy="6" r="1.5"/>
-        </svg>
-        <div>
-          <span class="meta-label">Location</span>
-          <span class="meta-value">Timișoara, Romania</span>
-        </div>
+      <li class="mi">
+        <svg class="mic" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.1"><path d="M6.5 1C4.57 1 3 2.57 3 4.5c0 2.8 3.5 7 3.5 7s3.5-4.2 3.5-7C10 2.57 8.43 1 6.5 1z"/><circle cx="6.5" cy="4.5" r="1.2"/></svg>
+        <div><span class="mil" id="m2">Location</span><span class="miv">Timisoara, Romania</span></div>
       </li>
-      <li class="meta-item">
-        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
-          <circle cx="8" cy="8" r="6.5"/>
-          <path d="M8 1.5C8 1.5 5.5 4 5.5 8s2.5 6.5 2.5 6.5M8 1.5C8 1.5 10.5 4 10.5 8S8 14.5 8 14.5M1.5 8h13"/>
-        </svg>
-        <div>
-          <span class="meta-label">Institution</span>
-          <span class="meta-value">Universitatea de Vest<br/>din Timișoara</span>
-        </div>
+      <li class="mi">
+        <svg class="mic" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.1"><path d="M6.5 1L1 4.5v5L6.5 12 12 9.5v-5L6.5 1z"/><path d="M6.5 1v11M1 4.5l5.5 3 5.5-3"/></svg>
+        <div><span class="mil" id="m3">Patronage</span><span class="miv">European Parliament</span></div>
       </li>
-      <li class="meta-item">
-        <svg class="meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" color="rgba(255,255,255,.5)">
-          <path d="M8 1L2 5v7l6 3 6-3V5L8 1z"/>
-          <path d="M8 1v14M2 5l6 3 6-3"/>
-        </svg>
-        <div>
-          <span class="meta-label">Patronage</span>
-          <span class="meta-value">European Parliament</span>
-        </div>
+      <li class="mi">
+        <svg class="mic" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.1"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 1.2S4.2 3 4.2 6.5s2.3 5.3 2.3 5.3M6.5 1.2S8.8 3 8.8 6.5 6.5 11.8 6.5 11.8M1.2 6.5h10.6"/></svg>
+        <div><span class="mil" id="m4">Institution</span><span class="miv">Universitatea de Vest din Timisoara</span></div>
       </li>
     </ul>
 
-    <div class="left-footer">
-      <div class="left-footer-label">Authorized Signatories</div>
-      <div class="signatories">
-        <div class="signatory">
-          <span class="signatory-name">Viorel Lambu</span>
-          <span class="signatory-role">Director General</span>
-        </div>
-        <div class="signatory">
-          <span class="signatory-name">Paula Iovescu</span>
-          <span class="signatory-role">Project Manager</span>
-        </div>
-      </div>
+    <div class="lft">
+      <div class="lfl" id="siglabel">Authorized Signatories</div>
+      <div class="sg"><span class="sgn">Viorel Lambu</span><span class="sgr" id="sr1">Director General</span></div>
+      <div class="sg"><span class="sgn">Paula Iovescu</span><span class="sgr" id="sr2">Project Manager</span></div>
     </div>
-
   </div>
 </aside>
 
-<!-- ════════════ RIGHT PANEL ════════════ -->
-<div class="panel-right">
+<!-- RIGHT -->
+<div class="pr">
 
-  <!-- Top bar -->
-  <div class="right-topbar">
-    <div class="right-topbar-left">Certificate Generation System</div>
-    <div class="right-topbar-right">
-      <div class="status-dot"></div>
-      <span class="status-text">Available</span>
+  <div class="tb">
+    <span class="tbl" id="tblabel">Certificate Generation System</span>
+    <div class="sp">
+      <div class="sd"></div>
+      <span class="st" id="stlabel">Available</span>
     </div>
   </div>
 
-  <!-- Main form -->
-  <div class="right-main">
-    <div class="form-container">
+  <div class="rm">
+    <div class="fw">
 
-      <div class="form-heading">
-        <div class="form-heading-eyebrow">
-          <div class="form-heading-eyebrow-line"></div>
-          <div class="form-heading-eyebrow-text">Official Document</div>
+      <div class="fe">
+        <div class="fel"></div>
+        <div class="fet" id="eyebrow">Official Document</div>
+      </div>
+      <h1 class="ft" id="formtitle">Generate Your<br/>Certificate</h1>
+      <p class="fd" id="formdesc">Enter your full name and select your role. The certificate will be issued as a signed PDF document.</p>
+
+      <!-- NAME -->
+      <div class="fi">
+        <div class="fll">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="6.5" cy="4" r="2.2"/><path d="M1 11.5c0-2.4 2.46-4.3 5.5-4.3s5.5 1.9 5.5 4.3"/></svg>
+          <span class="flt" id="lname">Full Name</span>
+          <span class="freq">*</span>
         </div>
-        <h1>Generate Your<br />Certificate</h1>
-        <p>Enter your full name and select your delegation or committee. The certificate will be issued as a signed PDF document.</p>
+        <input type="text" id="cert-name" class="caps" placeholder="Enter name as it should appear" maxlength="50" oninput="onNameInput(this)" autocomplete="off"/>
+        <div class="pt"><div class="pf" id="nameMeter"></div></div>
+        <div class="fsh" id="nameHint">Name will appear in title case on the certificate</div>
       </div>
 
-      <!-- FULL NAME -->
-      <div class="field">
-        <div class="field-label">
-          <svg class="field-label-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2">
-            <circle cx="7" cy="4.5" r="2.5"/>
-            <path d="M1.5 12.5c0-2.76 2.46-5 5.5-5s5.5 2.24 5.5 5"/>
-          </svg>
-          <span class="field-label-text">Full Name</span>
-          <span class="field-label-req">*</span>
+      <!-- ROLE -->
+      <div class="fi">
+        <div class="fll">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="1" y="3.5" width="11" height="8" rx=".7"/><path d="M4 3.5V2.8a2.5 2.5 0 015 0v.7M4.5 7h4M4.5 9h2.5"/></svg>
+          <span class="flt" id="lrole">Role Type</span>
+          <span class="freq">*</span>
         </div>
-        <input
-          type="text"
-          id="cert-name"
-          class="caps"
-          placeholder="Enter name as it should appear"
-          maxlength="50"
-          oninput="onNameInput(this)"
-          autocomplete="off"
-        />
-        <div class="progress-track"><div class="progress-fill" id="nameMeter"></div></div>
-        <div class="field-sub" id="nameHint">Name will appear in title case on the certificate</div>
-      </div>
-
-      <!-- REPRESENTING -->
-      <div class="field">
-        <div class="field-label">
-          <svg class="field-label-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M1 3h12M1 7h8M1 11h5"/>
-          </svg>
-          <span class="field-label-text">Representing</span>
-          <span class="field-label-req">*</span>
+        <div class="rr">
+          <select id="role-type" onchange="onRoleTypeChange()">
+            <option value="" id="rph">Select role...</option>
+            <option value="MINISTER" id="rmin">Minister</option>
+            <option value="MEP" id="rmep">MEP</option>
+          </select>
+          <select id="role-detail" disabled onchange="updatePreview()">
+            <option value="" id="dph">Select...</option>
+          </select>
         </div>
-        <select id="cert-representing" onchange="updatePreview()">
-          <option value="">Select delegation or committee…</option>
-          <option value="TEST COMMITTEE 1">Test Committee 1</option>
-          <option value="TEST COMMITTEE 2">Test Committee 2</option>
-          <option value="TEST COMMITTEE 3">Test Committee 3</option>
-          <option value="TEST COMMITTEE 4">Test Committee 4</option>
-          <option value="TEST COMMITTEE 5">Test Committee 5</option>
-          <option value="TEST COUNTRY 1">Test Country 1</option>
-          <option value="TEST COUNTRY 2">Test Country 2</option>
-          <option value="TEST COUNTRY 3">Test Country 3</option>
-        </select>
-        <div class="field-sub">As designated by the Organising Committee</div>
+        <div class="fsh" id="rolehint">Minister = representing a country &nbsp;&middot;&nbsp; MEP = representing a political group</div>
       </div>
 
       <!-- PREVIEW -->
-      <div class="preview" id="previewBox">
-        <div class="preview-inner">
-          <div id="previewEmpty" class="preview-empty">Preview will appear here</div>
-          <div id="previewContent" style="display:none; text-align:center;">
-            <div class="preview-label">Certificate Issued To</div>
-            <div class="preview-name" id="previewName"></div>
-            <div class="preview-divider" id="previewDivider"></div>
-            <div class="preview-rep" id="previewRep"></div>
+      <div class="pv" id="pvbox">
+        <div class="pvi">
+          <div id="pvem" class="pvem">Preview will appear here</div>
+          <div id="pvcon" style="display:none">
+            <div class="pve" id="pvey">Certificate Issued To</div>
+            <div class="pvn" id="pvname"></div>
+            <div class="pvd" id="pvdiv" style="display:none"></div>
+            <div class="pvr" id="pvrole" style="display:none"></div>
           </div>
         </div>
       </div>
 
       <!-- DOWNLOAD -->
-      <div class="btn-group">
-        <div class="btn-note">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2">
-            <circle cx="6" cy="6" r="5"/>
-            <path d="M6 5.5v3M6 4h.01"/>
-          </svg>
-          PDF document · A4 format · print-ready
-        </div>
-        <button class="btn-download" id="downloadBtn" onclick="generatePDF()">
-          <span id="btnText">Download Certificate</span>
-          <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
-          </svg>
-        </button>
+      <div class="bn">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.1"><circle cx="5.5" cy="5.5" r="4.5"/><path d="M5.5 5v2.5M5.5 3.8h.01"/></svg>
+        <span id="bnote">PDF document &middot; A4 format &middot; print-ready</span>
       </div>
+      <button class="bd" id="downloadBtn" onclick="generatePDF()">
+        <span id="btnText">Download Certificate</span>
+        <svg id="btnIcon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 2v7M4 6.5l3 3.5 3-3.5M2 12h10"/></svg>
+      </button>
 
     </div>
   </div>
 
-  <!-- Footer -->
-  <div class="right-footer">
-    <div class="right-footer-left">
-      MEU Timișoara 2026 &nbsp;·&nbsp; Universitatea de Vest din Timișoara
-    </div>
-    <div class="right-footer-right">
-      <span class="ep-badge">Under the Patronage of the European Parliament</span>
-    </div>
+  <div class="rf">
+    <span class="rfl">MEU Timisoara 2026 &nbsp;&middot;&nbsp; Universitatea de Vest din Timisoara</span>
+    <span class="rfr" id="footr">European Parliament Patronage</span>
   </div>
 
-</div><!-- /panel-right -->
-
+</div>
 
 <script>
-  /* ── NAME INPUT ── */
-  function onNameInput(el) {
-    const start = el.selectionStart;
-    el.value = el.value.toUpperCase();
-    el.setSelectionRange(start, start);
-    const len = el.value.length;
-    document.getElementById('nameMeter').style.width = (len / 50 * 100) + '%';
-    const hint = document.getElementById('nameHint');
-    if (len > 40) {
-      hint.textContent = `${50 - len} characters remaining`;
-      hint.className = 'field-sub warn';
-    } else {
-      hint.textContent = 'Name will appear in title case on the certificate';
-      hint.className = 'field-sub';
-    }
-    updatePreview();
+const COUNTRIES = ['Austria','Belgium','Bulgaria','Cyprus','Finland','France','Germany','Greece','Hungary','Italy','Lithuania','Netherlands','Poland','Portugal','Romania','Slovakia','Spain'];
+const GROUPS = ['EPP','S&D','Greens','Renew Europe','The Left','ECR','ESN','Patriots'];
+
+const T = {
+  en: {
+    lsub:'First Edition \u00b7 2026 \u00b7 Participation Certificate',
+    m1:'Dates',m2:'Location',m3:'Patronage',m4:'Institution',
+    siglabel:'Authorized Signatories',sr2:'Project Manager',
+    tblabel:'Certificate Generation System',stlabel:'Available',
+    eyebrow:'Official Document',
+    formtitle:'Generate Your<br/>Certificate',
+    formdesc:'Enter your full name and select your role. The certificate will be issued as a signed PDF document.',
+    lname:'Full Name',lrole:'Role Type',
+    rph:'Select role...',rmin:'Minister',rmep:'MEP',dph:'Select...',
+    rolehint:'Minister = representing a country \u00b7 MEP = representing a political group',
+    nameHintDefault:'Name will appear in title case on the certificate',
+    nameHintWarn:(n)=>`${n} characters remaining`,
+    pvem:'Preview will appear here',pvey:'Certificate Issued To',
+    bnote:'PDF document \u00b7 A4 format \u00b7 print-ready',
+    btnDown:'Download Certificate',btnGen:'Generating...',btnDone:'Certificate Downloaded',
+    footr:'European Parliament Patronage',
+    aName:'Please enter your full name.',aRole:'Please select your role and delegation.',aErr:'Error generating certificate:\n',
+  },
+  ro: {
+    lsub:'Prima Edi\u021bie \u00b7 2026 \u00b7 Certificat de Participare',
+    m1:'Perioad\u0103',m2:'Loca\u021bie',m3:'Patronaj',m4:'Institu\u021bie',
+    siglabel:'Semnatari Autoriza\u021bi',sr2:'Manager de Proiect',
+    tblabel:'Sistem de Generare Certificate',stlabel:'Disponibil',
+    eyebrow:'Document Oficial',
+    formtitle:'Genereaz\u0103-\u021bi<br/>Certificatul',
+    formdesc:'Introdu numele complet \u015fi selecteaz\u0103 rolul t\u0103u. Certificatul va fi emis ca document PDF semnat.',
+    lname:'Nume Complet',lrole:'Tip de Rol',
+    rph:'Selecteaz\u0103 rolul...',rmin:'Ministru',rmep:'MEP',dph:'Selecteaz\u0103...',
+    rolehint:'Ministru = reprezint\u0103 o \u021bar\u0103 \u00b7 MEP = reprezint\u0103 un grup politic',
+    nameHintDefault:'Numele va ap\u0103rea formatat corect pe certificat',
+    nameHintWarn:(n)=>`${n} caractere r\u0103mase`,
+    pvem:'Previzualizarea va ap\u0103rea aici',pvey:'Certificat emis pe numele',
+    bnote:'Document PDF \u00b7 Format A4 \u00b7 preg\u0103tit pentru tip\u0103rire',
+    btnDown:'Descarc\u0103 Certificatul',btnGen:'Se genereaz\u0103...',btnDone:'Certificat Desc\u0103rcat',
+    footr:'Patronaj Parlamentul European',
+    aName:'Introdu numele complet.',aRole:'Selecteaz\u0103 rolul \u015fi delega\u021bia.',aErr:'Eroare la generarea certificatului:\n',
   }
+};
 
-  /* ── PREVIEW ── */
-  function updatePreview() {
-    const name = document.getElementById('cert-name').value.trim();
-    const rep  = document.getElementById('cert-representing').value;
-    const box  = document.getElementById('previewBox');
-    const pn   = document.getElementById('previewName');
-    const pr   = document.getElementById('previewRep');
-    const div  = document.getElementById('previewDivider');
-    const empty   = document.getElementById('previewEmpty');
-    const content = document.getElementById('previewContent');
+let lang = 'en';
 
-    const toTitle = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-en').classList.toggle('on', l==='en');
+  document.getElementById('btn-ro').classList.toggle('on', l==='ro');
+  const t = T[l];
+  document.getElementById('lsub').textContent     = t.lsub;
+  document.getElementById('m1').textContent       = t.m1;
+  document.getElementById('m2').textContent       = t.m2;
+  document.getElementById('m3').textContent       = t.m3;
+  document.getElementById('m4').textContent       = t.m4;
+  document.getElementById('siglabel').textContent = t.siglabel;
+  document.getElementById('sr2').textContent      = t.sr2;
+  document.getElementById('tblabel').textContent  = t.tblabel;
+  document.getElementById('stlabel').textContent  = t.stlabel;
+  document.getElementById('eyebrow').textContent  = t.eyebrow;
+  document.getElementById('formtitle').innerHTML  = t.formtitle;
+  document.getElementById('formdesc').textContent = t.formdesc;
+  document.getElementById('lname').textContent    = t.lname;
+  document.getElementById('lrole').textContent    = t.lrole;
+  document.getElementById('rph').textContent      = t.rph;
+  document.getElementById('rmin').textContent     = t.rmin;
+  document.getElementById('rmep').textContent     = t.rmep;
+  document.getElementById('rolehint').textContent = t.rolehint;
+  document.getElementById('nameHint').textContent = t.nameHintDefault;
+  document.getElementById('pvem').textContent     = t.pvem;
+  document.getElementById('pvey').textContent     = t.pvey;
+  document.getElementById('bnote').textContent    = t.bnote;
+  document.getElementById('footr').textContent    = t.footr;
+  document.getElementById('cert-name').placeholder= l==='ro' ? 'Introduce\u021bi numele exact cum trebuie s\u0103 apar\u0103' : 'Enter name as it should appear';
+  rebuildDetail();
+  updatePreview();
+}
 
-    if (name) {
-      empty.style.display = 'none';
-      content.style.display = 'block';
-      box.classList.add('active');
-      pn.textContent = toTitle(name);
-      const len = name.length;
-      pn.style.fontSize = len <= 16 ? '2.2rem' : len <= 24 ? '1.8rem' : len <= 34 ? '1.4rem' : '1.1rem';
-    } else {
-      empty.style.display = 'block';
-      content.style.display = 'none';
-      box.classList.remove('active');
-    }
+function onRoleTypeChange() { rebuildDetail(); updatePreview(); }
 
-    if (rep) {
-      pr.textContent = rep;
-      pr.style.display = 'block';
-      div.style.display = 'block';
-    } else {
-      pr.style.display = 'none';
-      div.style.display = 'none';
-    }
-  }
+function rebuildDetail() {
+  const type = document.getElementById('role-type').value;
+  const sel  = document.getElementById('role-detail');
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const blank = document.createElement('option');
+  blank.value = ''; blank.textContent = T[lang].dph;
+  sel.appendChild(blank);
+  if (!type) { sel.disabled = true; return; }
+  const items = type === 'MINISTER' ? COUNTRIES : GROUPS;
+  items.forEach(item => {
+    const o = document.createElement('option');
+    o.value = item; o.textContent = item; sel.appendChild(o);
+  });
+  sel.disabled = false;
+  if (prev && items.includes(prev)) sel.value = prev;
+}
 
-  /* ── PDF GENERATION ── */
-  async function generatePDF() {
-    const name = document.getElementById('cert-name').value.trim();
-    const rep  = document.getElementById('cert-representing').value;
+function onNameInput(el) {
+  const s = el.selectionStart;
+  el.value = el.value.toUpperCase();
+  el.setSelectionRange(s, s);
+  const len = el.value.length;
+  document.getElementById('nameMeter').style.width = (len/50*100)+'%';
+  const hint = document.getElementById('nameHint');
+  if (len > 40) { hint.textContent = T[lang].nameHintWarn(50-len); hint.className='fsh warn'; }
+  else { hint.textContent = T[lang].nameHintDefault; hint.className='fsh'; }
+  updatePreview();
+}
 
-    if (!name) { alert('Please enter your full name.'); return; }
-    if (!rep)  { alert('Please select your delegation or committee.'); return; }
+function buildRole() {
+  const type = document.getElementById('role-type').value;
+  const det  = document.getElementById('role-detail').value;
+  if (!type || !det) return '';
+  return type === 'MINISTER' ? `MINISTER OF ${det.toUpperCase()}` : `MEP FROM ${det}`;
+}
 
-    const btn     = document.getElementById('downloadBtn');
-    const btnText = document.getElementById('btnText');
-    const btnIcon = document.getElementById('btnIcon');
+function updatePreview() {
+  const name = document.getElementById('cert-name').value.trim();
+  const role = buildRole();
+  const toTitle = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  const box = document.getElementById('pvbox');
+  const em  = document.getElementById('pvem');
+  const con = document.getElementById('pvcon');
+  const pn  = document.getElementById('pvname');
+  const pr  = document.getElementById('pvrole');
+  const pd  = document.getElementById('pvdiv');
+  if (name) {
+    em.style.display='none'; con.style.display='block'; box.classList.add('on');
+    pn.textContent = toTitle(name);
+    const l = name.length;
+    pn.style.fontSize = l<=16?'2rem':l<=24?'1.65rem':l<=34?'1.3rem':'1.05rem';
+  } else { em.style.display='block'; con.style.display='none'; box.classList.remove('on'); }
+  if (role) { pr.textContent=role; pr.style.display='block'; pd.style.display='block'; }
+  else { pr.style.display='none'; pd.style.display='none'; }
+}
 
-    btnText.textContent = 'Generating…';
-    btnIcon.outerHTML = `<span class="spinner" id="btnIcon"></span>`;
-    btn.disabled = true;
-
+async function generatePDF() {
+  const name = document.getElementById('cert-name').value.trim();
+  const role = buildRole();
+  const t    = T[lang];
+  if (!name) { alert(t.aName); return; }
+  if (!role) { alert(t.aRole); return; }
+  const btn = document.getElementById('downloadBtn');
+  btn.disabled = true;
+  document.getElementById('btnText').textContent = t.btnGen;
+  document.getElementById('btnIcon').outerHTML = '<span class="sp2" id="btnIcon"></span>';
+  try {
+    const { PDFDocument, rgb, StandardFonts } = PDFLib;
+    const resp = await fetch('Diploma__1_.pdf');
+    if (!resp.ok) throw new Error('Template not found. Place Diploma__1_.pdf in the same folder.');
+    const pdfDoc = await PDFDocument.load(await resp.arrayBuffer());
+    const page   = pdfDoc.getPages()[0];
+    const { width } = page.getSize();
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    let nameFont = fontBold;
     try {
-      const { PDFDocument, rgb, StandardFonts } = PDFLib;
-
-      const templateBytes = await fetch('Diploma__1_.pdf').then(r => {
-        if (!r.ok) throw new Error('Certificate template not found.');
-        return r.arrayBuffer();
-      });
-
-      const pdfDoc = await PDFDocument.load(templateBytes);
-      const page   = pdfDoc.getPages()[0];
-      const { width } = page.getSize();
-      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-      // Load Dancing Script TTF for cursive name
-      let nameFont = fontBold;
-      try {
-        const css = await fetch(
-          'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700',
-          { headers: { 'User-Agent': 'Mozilla/4.0' } }
-        ).then(r => r.text());
-        const match = css.match(/src:\s*url\(([^)]+\.ttf[^)]*)\)/i) || css.match(/src:\s*url\(([^)]+)\)/);
-        if (match) {
-          const ttfData = await fetch(match[1]).then(r => r.arrayBuffer());
-          nameFont = await pdfDoc.embedFont(ttfData);
-        }
-      } catch(e) { console.warn('Dancing Script unavailable.'); }
-
-      const toTitle = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-      const nameDisplay = toTitle(name);
-      const nameLen = nameDisplay.length;
-      const nameFontSize = nameLen <= 14 ? 46 : nameLen <= 20 ? 40 : nameLen <= 28 ? 34 : nameLen <= 36 ? 28 : 22;
-
-      const centerX = (text, font, size) => (width - font.widthOfTextAtSize(text, size)) / 2;
-      const blue = rgb(0.051, 0.133, 0.318);
-
-      // NAME — calibrated y=1050
-      page.drawText(nameDisplay, {
-        x: centerX(nameDisplay, nameFont, nameFontSize),
-        y: 1050,
-        size: nameFontSize,
-        font: nameFont,
-        color: blue,
-      });
-
-      // REPRESENTING — calibrated y=760
-      const repFontSize = rep.length > 28 ? 22 : rep.length > 20 ? 26 : 30;
-      page.drawText(rep, {
-        x: centerX(rep, fontBold, repFontSize),
-        y: 760,
-        size: repFontSize,
-        font: fontBold,
-        color: blue,
-      });
-
-      const bytes = await pdfDoc.save();
-      const blob  = new Blob([bytes], { type: 'application/pdf' });
-      const url   = URL.createObjectURL(blob);
-      const a     = document.createElement('a');
-      a.href = url;
-      a.download = `Certificate_MEU_Timisoara_2026_${name.replace(/\s+/g, '_')}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      // Success state
-      document.getElementById('btnIcon').outerHTML = `
-        <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <polyline points="2,8 6,12 14,4"/>
-        </svg>`;
-      document.getElementById('btnText').textContent = 'Certificate Downloaded';
-      btn.style.background = '#1a4a2e';
-      btn.style.borderColor = '#1a4a2e';
-
-      setTimeout(() => {
-        document.getElementById('btnText').textContent = 'Download Certificate';
-        document.getElementById('btnIcon').outerHTML = `
-          <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
-          </svg>`;
-        btn.style.background = '';
-        btn.style.borderColor = '';
-        btn.disabled = false;
-      }, 3500);
-
-    } catch (err) {
-      console.error(err);
-      alert('Error generating certificate:\n' + err.message);
-      document.getElementById('btnText').textContent = 'Download Certificate';
-      document.getElementById('btnIcon').outerHTML = `
-        <svg id="btnIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M8 2v9M4 8l4 4 4-4M2 14h12"/>
-        </svg>`;
-      btn.disabled = false;
-    }
+      const css = await fetch('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700',{headers:{'User-Agent':'Mozilla/4.0'}}).then(r=>r.text());
+      const m = css.match(/src:\s*url\(([^)]+\.ttf[^)]*)\)/i)||css.match(/src:\s*url\(([^)]+)\)/);
+      if (m) nameFont = await pdfDoc.embedFont(await fetch(m[1]).then(r=>r.arrayBuffer()));
+    } catch(e){}
+    const toTitle = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    const nd = toTitle(name);
+    const nl = nd.length;
+    const nfs = nl<=14?48:nl<=20?42:nl<=28?36:nl<=36?28:22;
+    const cx = (txt,font,sz) => (width - font.widthOfTextAtSize(txt,sz)) / 2;
+    const blue = rgb(0.051, 0.133, 0.318);
+    // NAME — y=1000
+    page.drawText(nd, { x:cx(nd,nameFont,nfs), y:1000, size:nfs, font:nameFont, color:blue });
+    // ROLE — y=750
+    const rfs = role.length>30?20:role.length>22?24:28;
+    page.drawText(role, { x:cx(role,fontBold,rfs), y:750, size:rfs, font:fontBold, color:blue });
+    const bytes = await pdfDoc.save();
+    const url = URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
+    const a = document.createElement('a');
+    a.href=url; a.download=`Certificate_MEU_Timisoara_2026_${name.replace(/\s+/g,'_')}.pdf`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    document.getElementById('btnIcon').outerHTML='<svg id="btnIcon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>';
+    document.getElementById('btnText').textContent = t.btnDone;
+    btn.style.background='#1a4a2e'; btn.style.borderColor='#1a4a2e';
+    setTimeout(()=>{
+      document.getElementById('btnText').textContent=t.btnDown;
+      document.getElementById('btnIcon').outerHTML='<svg id="btnIcon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 2v7M4 6.5l3 3.5 3-3.5M2 12h10"/></svg>';
+      btn.style.background=''; btn.style.borderColor=''; btn.disabled=false;
+    }, 3500);
+  } catch(err) {
+    alert(t.aErr+err.message);
+    document.getElementById('btnText').textContent=t.btnDown;
+    document.getElementById('btnIcon').outerHTML='<svg id="btnIcon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 2v7M4 6.5l3 3.5 3-3.5M2 12h10"/></svg>';
+    btn.disabled=false;
   }
+}
 </script>
-
 </body>
 </html>
